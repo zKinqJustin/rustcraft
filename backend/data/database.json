@@ -4,35 +4,102 @@
       "id": "user-admin-01",
       "username": "RustcraftAdmin",
       "email": "admin@rustcraft.net",
-      "passwordHash": "349912be5f973719946571597a731efc:eb362eb681ef40e21b8c66e2c366ff55938bf8c9ce75e71465bf6495bebe0413e00fc9dca029c2ea2ddaa5ceeeeb62c828fe656f461e7127e997f8c5b36aa081",
+      "passwordHash": "48bde2c71cf6279a68d7e6aa6a78a476:029f287f27c46a8410f68508edf5c65614f6ec90181a2d6c1ad337a3b3374cf7d62f32d22e893a9c5944d517aea575df51e464727c8dc889d89ef418e52146fc",
       "role": "Admin",
       "avatarUrl": "https://api.dicebear.com/7.x/bottts/svg?seed=RustcraftAdmin",
       "bio": "Rustcraft Lead Administrator",
-      "createdAt": "2026-11-12T15:05:00.000Z"
+      "createdAt": "2026-11-12T15:05:00.000Z",
+      "updatedAt": "2026-11-12T16:43:26.870Z"
     },
     {
       "id": "user-dev-01",
       "username": "Developer",
       "email": "developer@rustcraft.net",
-      "passwordHash": "349912be5f973719946571597a731efc:eb362eb681ef40e21b8c66e2c366ff55938bf8c9ce75e71465bf6495bebe0413e00fc9dca029c2ea2ddaa5ceeeeb62c828fe656f461e7127e997f8c5b36aa081",
+      "passwordHash": "48bde2c71cf6279a68d7e6aa6a78a476:029f287f27c46a8410f68508edf5c65614f6ec90181a2d6c1ad337a3b3374cf7d62f32d22e893a9c5944d517aea575df51e464727c8dc889d89ef418e52146fc",
       "role": "Developer",
       "avatarUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=Developer",
       "bio": "Verified Developer",
       "createdAt": "2026-11-12T15:05:00.000Z"
     }
   ],
-  "mods": [],
-  "mod_versions": [],
+  "mods": [
+    {
+      "id": "5e87f59c-812f-4079-b07c-a5daf91b3fa4",
+      "name": "BetterF3",
+      "slug": "betterf3",
+      "summary": "Its a Better F3 Screen",
+      "description": "Its a Better F3 Screen",
+      "kind": "native",
+      "categories": [
+        "utility"
+      ],
+      "supportedGameVersions": [
+        "1.21.1"
+      ],
+      "authorId": "user-admin-01",
+      "downloads": 0,
+      "likes": 0,
+      "iconUrl": "https://api.dicebear.com/7.x/shapes/svg?seed=BetterF3",
+      "screenshots": [],
+      "repositoryUrl": "",
+      "license": "MIT",
+      "createdAt": "2026-11-12T16:27:15.987Z"
+    }
+  ],
+  "mod_versions": [
+    {
+      "id": "dec8f9ff-047b-41fb-9a96-a951b8fa8e07",
+      "modId": "5e87f59c-812f-4079-b07c-a5daf91b3fa4",
+      "version": "1.0.0",
+      "changelog": "Added customizable HUD elements",
+      "gameVersion": "1.21.1",
+      "filename": "BetterF3-1.0.0.hnmod",
+      "filePath": "mods_5e87f59c-812f-4079-b07c-a5daf91b3fa4/BetterF3-1.0.0.hnmod",
+      "fileSize": 50,
+      "sha256": "27ef88c67e44ee1a4bd8e8d8e6339afdca3fe302a3eaa2debbd994d01c6c2c82",
+      "isSourceBuildRequired": false,
+      "dependencies": [],
+      "createdAt": "2026-11-12T16:44:27.919Z"
+    }
+  ],
   "modpacks": [],
   "modpack_versions": [],
   "categories": [
-    { "id": "technology", "name": "Technology & Automation", "icon": "Cpu" },
-    { "id": "magic", "name": "Magic & Arcane", "icon": "Wand2" },
-    { "id": "adventure", "name": "Adventure & RPG", "icon": "Compass" },
-    { "id": "worldgen", "name": "World Generation & Biomes", "icon": "Trees" },
-    { "id": "decoration", "name": "Decoration & Building", "icon": "Paintbrush" },
-    { "id": "optimization", "name": "Performance & Optimization", "icon": "Zap" },
-    { "id": "utility", "name": "Utility & Tools", "icon": "Wrench" }
+    {
+      "id": "technology",
+      "name": "Technology & Automation",
+      "icon": "Cpu"
+    },
+    {
+      "id": "magic",
+      "name": "Magic & Arcane",
+      "icon": "Wand2"
+    },
+    {
+      "id": "adventure",
+      "name": "Adventure & RPG",
+      "icon": "Compass"
+    },
+    {
+      "id": "worldgen",
+      "name": "World Generation & Biomes",
+      "icon": "Trees"
+    },
+    {
+      "id": "decoration",
+      "name": "Decoration & Building",
+      "icon": "Paintbrush"
+    },
+    {
+      "id": "optimization",
+      "name": "Performance & Optimization",
+      "icon": "Zap"
+    },
+    {
+      "id": "utility",
+      "name": "Utility & Tools",
+      "icon": "Wrench"
+    }
   ],
   "reviews": [],
   "downloads": []

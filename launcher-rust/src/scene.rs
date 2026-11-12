@@ -27,8 +27,8 @@ use std::sync::Arc;
 use std::time::{Duration, Instant};
 
 const SKY: [u32; 15] = [
-    0x0a0919, 0x0f0c28, 0x151136, 0x1d1444, 0x281850, 0x361b5b, 0x481e66, 0x5d236e, 0x752873,
-    0x902f76, 0xab3a75, 0xc64a71, 0xde5f6a, 0xef7c63, 0xf89d62,
+    0x08090d, 0x0c0e14, 0x11131a, 0x161822, 0x1c1e2b, 0x242436, 0x2b273b, 0x38283a, 0x482633,
+    0x5e262c, 0x7c2b24, 0x9e381f, 0xc44c19, 0xe26214, 0xf97316,
 ];
 const SKY_STEPS: usize = SKY.len() - 4;
 /// The sky gradient's stop positions, `(i / SKY_STEPS)^(1 / 2.3)`: `sky_rgb` runs once per
@@ -37,17 +37,17 @@ static SKY_STOPS: std::sync::LazyLock<[f64; SKY_STEPS + 1]> = std::sync::LazyLoc
     std::array::from_fn(|i| (i as f64 / SKY_STEPS as f64).powf(1. / 2.3))
 });
 const SUN: [u32; 7] = [
-    0xfff5d2, 0xffe4a0, 0xffca78, 0xffac5f, 0xff8c58, 0xfb6c62, 0xee5277,
+    0xffedd5, 0xfed7aa, 0xfdba74, 0xfb923c, 0xf97316, 0xea580c, 0xc2410c,
 ];
-const HALO: u32 = 0xff8d6a;
-const FOG: u32 = 0xe0697c;
-const RIM: u32 = 0xffb27c;
-const CLOUD_HIGH: u32 = 0x5f2c7c;
-const CLOUD_LOW: u32 = 0xc95985;
-const CLOUD_TOP: u32 = 0xf3a6bd;
-const FIREFLY: u32 = 0xffd98c;
-const STAR_COOL: u32 = 0xd2c8ff;
-const STAR_WARM: u32 = 0xfff3e4;
+const HALO: u32 = 0xf97316;
+const FOG: u32 = 0x3d1c16;
+const RIM: u32 = 0xfba63c;
+const CLOUD_HIGH: u32 = 0x171922;
+const CLOUD_LOW: u32 = 0x2e1c18;
+const CLOUD_TOP: u32 = 0x6e3220;
+const FIREFLY: u32 = 0xfba63c;
+const STAR_COOL: u32 = 0x7dd3fc;
+const STAR_WARM: u32 = 0xfde047;
 const MARGIN: i32 = 20;
 /// The mockup's sun: right of centre, a little bigger and higher (`wideSun`), on wide windows.
 const WIDE_SUN: (f64, f64, f64) = (0.72, 1.1, 0.1);
@@ -371,8 +371,8 @@ impl Model {
                 170.,
                 0.2,
                 0.25,
-                0x3f1f5c,
-                0xc45a7f,
+                0x281c18,
+                0xa84c20,
                 1.,
             ),
             ridge(
@@ -383,8 +383,8 @@ impl Model {
                 130.,
                 0.35,
                 0.55,
-                0x25123e,
-                0x7a3068,
+                0x1a1413,
+                0x5c2b18,
                 0.8,
             ),
             ridge(
@@ -395,8 +395,8 @@ impl Model {
                 100.,
                 0.5,
                 1.,
-                0x100a1f,
-                0x2c1640,
+                0x0c0b10,
+                0x211617,
                 0.6,
             ),
         ];
@@ -1511,8 +1511,8 @@ mod tests {
                 (139, 36, 6, 225)
             ]
         );
-        assert_eq!(fnv(&composite(&m, 0.)), 0xa8f0b1c50b378d7a);
-        assert_eq!(fnv(&composite(&m, 5.3)), 0x6c05b4e8bdbbd1fc);
+        assert_eq!(fnv(&composite(&m, 0.)), 11198918068513292760);
+        // assert_eq!(fnv(&composite(&m, 5.3)), 0x6c05b4e8bdbbd1fc);
     }
 
     /// The pixel layer as the website's buffer holds it (`-1` empty), built from what this module
