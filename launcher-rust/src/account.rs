@@ -47,7 +47,7 @@ pub fn client_id() -> Option<String> {
         .or_else(|| option_env!("HORIZON_MSA_CLIENT_ID").map(str::to_owned))
         .map(|id| id.trim().to_owned())
         .filter(|id| !id.is_empty())
-        .or_else(|| Some("00000000402b5328".to_string()))
+        .or_else(|| Some("c36a9fb6-4f2a-41ff-90bd-ae7cc92031eb".to_string()))
 }
 
 /// Where the requests go: the real services, or a mock in tests.

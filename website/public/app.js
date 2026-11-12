@@ -12,6 +12,34 @@ document.addEventListener('DOMContentLoaded', async () => {
   checkStoredAuth();
   await loadData();
   setupStudio();
+
+  // Setup drag-and-drop for upload dropzone
+  const dropzone = document.getElementById('dropzone-file');
+  if (dropzone) {
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.add('border-orange-500', 'bg-slate-800');
+      }, false);
+    });
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.remove('border-orange-500', 'bg-slate-800');
+      }, false);
+    });
+    dropzone.addEventListener('drop', (e) => {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      if (files && files.length > 0) {
+        const fileInput = document.getElementById('upload-file');
+        fileInput.files = files;
+        handleFileSelect({ target: fileInput });
+      }
+    });
+  }
 });
 
 // Navigation
@@ -329,15 +357,46 @@ async function installStudioPackDirectly() {
   triggerInstall('rustcraft-essentials', true);
 }
 
+// File selection handler for project upload
+function handleFileSelect(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  const badge = document.getElementById('file-selected-badge');
+  const labelMain = document.getElementById('file-label-main');
+  const labelSub = document.getElementById('file-label-sub');
+
+  if (badge) {
+    const sizeKb = (file.size / 1024).toFixed(1);
+    const sizeStr = file.size > 1048576 ? `${(file.size / 1048576).toFixed(2)} MB` : `${sizeKb} KB`;
+    badge.textContent = `Selected: ${file.name} (${sizeStr})`;
+    badge.classList.remove('hidden');
+  }
+  if (labelMain) {
+    labelMain.textContent = file.name;
+  }
+  if (labelSub) {
+    labelSub.textContent = `Ready for upload - click to change`;
+  }
+}
+
 // Project Upload
 async function submitUploadProject() {
   const name = document.getElementById('upload-name').value.trim();
   const kind = document.getElementById('upload-kind').value;
   const category = document.getElementById('upload-cat').value;
   const summary = document.getElementById('upload-summary').value.trim();
-  const version = document.getElementById('upload-version').value.trim();
+  const version = document.getElementById('upload-version').value.trim() || '1.0.0';
+  const gameVersion = (document.getElementById('upload-game-version') && document.getElementById('upload-game-version').value.trim()) || '1.21.1';
+  const changelog = (document.getElementById('upload-changelog') && document.getElementById('upload-changelog').value.trim()) || 'Initial release';
 
   if (!name || !summary) return alert('Please fill in mod name and summary.');
+
+  const fileInput = document.getElementById('upload-file');
+  const file = fileInput && fileInput.files && fileInput.files[0];
+  if (!file) {
+    alert('Please select a mod file (.hnmod, .hmod, .jar, or .zip) to upload.');
+    return;
+  }
 
   const token = localStorage.getItem('rustcraft_jwt');
   if (!token) {
@@ -346,7 +405,15 @@ async function submitUploadProject() {
     return;
   }
 
+  const submitBtn = document.getElementById('upload-submit-btn');
+  const originalBtnText = submitBtn ? submitBtn.innerHTML : '';
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i><span>Uploading Project & File...</span>';
+  }
+
   try {
+    // 1. Create mod project metadata
     const res = await fetch(`${API_BASE}/mods`, {
       method: 'POST',
       headers: {
@@ -358,17 +425,54 @@ async function submitUploadProject() {
         kind,
         summary,
         categories: [category],
-        supportedGameVersions: ['1.21.1']
+        supportedGameVersions: [gameVersion]
       })
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error);
 
-    alert(`Project "${name}" published successfully!`);
+    const modId = data.id;
+
+    // 2. Upload the actual mod binary file as version
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('version', version);
+    formData.append('gameVersion', gameVersion);
+    formData.append('changelog', changelog);
+
+    const versionRes = await fetch(`${API_BASE}/mods/${modId}/versions`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      body: formData
+    });
+    const versionData = await versionRes.json();
+    if (!versionRes.ok) throw new Error(versionData.error || 'Failed to upload mod version file');
+
+    alert(`Project "${name}" and file "${file.name}" published successfully!`);
+
+    // Reset inputs
+    document.getElementById('upload-name').value = '';
+    document.getElementById('upload-summary').value = '';
+    if (fileInput) fileInput.value = '';
+    const badge = document.getElementById('file-selected-badge');
+    if (badge) badge.classList.add('hidden');
+    const labelMain = document.getElementById('file-label-main');
+    if (labelMain) labelMain.textContent = 'Click to upload or drag & drop';
+    const labelSub = document.getElementById('file-label-sub');
+    if (labelSub) labelSub.textContent = 'Native Mod (.hnmod), Content Mod (.hmod), or Jar Archive';
+
     navigateTo('mods');
     await loadData();
   } catch (e) {
     alert(`Failed to publish: ${e.message}`);
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalBtnText;
+      if (window.lucide) lucide.createIcons();
+    }
   }
 }
 

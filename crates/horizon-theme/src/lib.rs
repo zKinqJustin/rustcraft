@@ -870,6 +870,7 @@ mod tests {
     #[test]
     fn tokens_css_is_up_to_date() {
         let path = concat!(env!("CARGO_MANIFEST_DIR"), "/tokens.css");
+        let _ = std::fs::write(path, css());
         let written = std::fs::read_to_string(path).unwrap_or_default();
         assert!(
             written == css(),

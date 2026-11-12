@@ -313,11 +313,39 @@
           <input type="text" id="upload-summary" placeholder="Brief 1-line description of the mod" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-100 mt-1 focus:outline-none focus:border-orange-500">
         </div>
         <div>
-          <label class="text-xs font-semibold text-slate-300">Initial Version & Changelog</label>
-          <input type="text" id="upload-version" value="1.0.0" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-100 mt-1 focus:outline-none focus:border-orange-500">
+          <label class="text-xs font-semibold text-slate-300">Mod Binary / Archive File (.hnmod, .hmod, .jar, .zip)</label>
+          <div id="dropzone-file" onclick="document.getElementById('upload-file').click()" class="mt-1 border-2 border-dashed border-slate-700 hover:border-orange-500 rounded-2xl p-6 flex flex-col items-center justify-center gap-2 cursor-pointer bg-slate-800/50 hover:bg-slate-800 transition-all text-center group">
+            <input type="file" id="upload-file" accept=".hnmod,.hmod,.jar,.zip" class="hidden" onchange="handleFileSelect(event)">
+            <div class="w-12 h-12 rounded-xl bg-orange-500/10 text-orange-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <i data-lucide="upload-cloud" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <p id="file-label-main" class="text-xs font-bold text-slate-200">Click to upload or drag & drop</p>
+              <p id="file-label-sub" class="text-[11px] text-slate-400 mt-0.5">Native Mod (.hnmod), Content Mod (.hmod), or Jar Archive</p>
+            </div>
+            <span id="file-selected-badge" class="hidden text-[11px] font-semibold text-orange-400 bg-orange-500/10 px-3 py-1 rounded-full border border-orange-500/20"></span>
+          </div>
         </div>
-        <button onclick="submitUploadProject()" class="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs rounded-xl shadow-lg glow-orange transition-all">
-          Publish Mod Project to Platform
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="text-xs font-semibold text-slate-300">Initial Version</label>
+            <input type="text" id="upload-version" value="1.0.0" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-100 mt-1 focus:outline-none focus:border-orange-500">
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-slate-300">Minecraft Version</label>
+            <input type="text" id="upload-game-version" value="1.21.1" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-100 mt-1 focus:outline-none focus:border-orange-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-slate-300">Changelog / Notes</label>
+          <input type="text" id="upload-changelog" placeholder="e.g. Initial public release" value="Initial release" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-100 mt-1 focus:outline-none focus:border-orange-500">
+        </div>
+
+        <button id="upload-submit-btn" onclick="submitUploadProject()" class="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs rounded-xl shadow-lg glow-orange transition-all flex items-center justify-center gap-2">
+          <i data-lucide="upload" class="w-4 h-4"></i>
+          <span>Publish Mod Project & Upload File</span>
         </button>
       </div>
     </div>

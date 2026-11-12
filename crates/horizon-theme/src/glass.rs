@@ -99,7 +99,7 @@ impl Glass {
     /// `--base: color-mix(in oklab, accent 10%, #14111d)`, and `.hzl-glass`'s background
     /// `color-mix(in srgb, white tint, color-mix(in oklab, base 22%, transparent))`.
     pub fn new(accent: u32, tint: f32, blur: f32) -> Glass {
-        let base = mix_oklab(accent, 0x111420, 0.10);
+        let base = mix_oklab(accent, 0x14111d, 0.10);
         // White at `tint` over the base at 22 %, mixed with premultiplied alpha as CSS does.
         let base_alpha = 0.22;
         let alpha = tint + (1. - tint) * base_alpha;
@@ -244,9 +244,9 @@ mod tests {
     /// canvas for the sRGB bytes): an independent check of the OKLab maths and the plate's mix.
     #[test]
     fn mixes_match_the_browser() {
-        let g = Glass::default_look();
+        let g = Glass::new(0x6b4bff, TINT, BLUR);
         let soft = oklab(g.accent_soft);
-        let mixed = [0, 1, 2].map(|i| oklab(ACCENT)[i] * 0.52 + oklab(0xffffff)[i] * 0.48);
+        let mixed = [0, 1, 2].map(|i| oklab(0x6b4bff)[i] * 0.52 + oklab(0xffffff)[i] * 0.48);
         for (i, want) in [0.772018, 0.0291158, -0.12693].into_iter().enumerate() {
             assert!(
                 (mixed[i] - want).abs() < 1e-3,
