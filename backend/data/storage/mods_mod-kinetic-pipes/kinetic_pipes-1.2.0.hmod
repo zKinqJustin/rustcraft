@@ -1,0 +1,8 @@
+format = 1
+id = "kinetic_pipes"
+name = "Kinetic Item Pipes"
+version = "1.2.0"
+description = "Lag-free item transport"
+authors = ["RustModder"]
+game = "1.21.1"
+capabilities = ["registries"]
