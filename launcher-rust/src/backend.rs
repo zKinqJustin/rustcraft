@@ -675,9 +675,16 @@ pub fn compare_versions(a: &str, b: &str) -> std::cmp::Ordering {
 /// Every published release of the repository, both kinds, as GitHub's JSON (kept on disk with its
 /// ETag, and read through Kira's mirror past GitHub's rate limit: [`crate::github`]).
 fn release_list() -> Result<serde_json::Value, String> {
-    crate::github::json(&format!(
+    let res = crate::github::json(&format!(
         "https://api.github.com/repos/{REPO}/releases?per_page=100"
-    ))
+    ));
+    if let Ok(ref val) = res {
+        if val.as_array().is_some_and(|arr| !arr.is_empty()) {
+            return res;
+        }
+    }
+    // Fallback to official releases index if repo has no releases yet
+    crate::github::json("https://api.github.com/repos/horizon-rust/horizon/releases?per_page=100")
 }
 
 /// The releases in `list` whose tag passes `keep`, newest first, with the asset named `asset`.
@@ -1042,7 +1049,19 @@ fn versions_dir() -> PathBuf {
 }
 
 pub fn version_dir(tag: &str) -> PathBuf {
-    versions_dir().join(tag)
+    let own = versions_dir().join(tag);
+    if own.exists() {
+        return own;
+    }
+    let horizon = dirs::data_dir()
+        .unwrap_or_else(std::env::temp_dir)
+        .join("horizon-launcher")
+        .join("versions")
+        .join(tag);
+    if horizon.exists() {
+        return horizon;
+    }
+    own
 }
 
 const COMPLETE: &str = ".installed";
@@ -1080,7 +1099,20 @@ fn program_mod_api_level(path: &Path) -> u32 {
 
 /// Installed versions, newest tag first.
 pub fn installed() -> Vec<String> {
-    installed_in(&versions_dir())
+    let mut tags = installed_in(&versions_dir());
+    let horizon_versions = dirs::data_dir()
+        .unwrap_or_else(std::env::temp_dir)
+        .join("horizon-launcher")
+        .join("versions");
+    if horizon_versions.exists() {
+        for tag in installed_in(&horizon_versions) {
+            if !tags.contains(&tag) {
+                tags.push(tag);
+            }
+        }
+        tags.sort_by(|a, b| compare_versions(b, a));
+    }
+    tags
 }
 
 fn installed_in(versions: &Path) -> Vec<String> {

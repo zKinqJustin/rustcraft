@@ -197,6 +197,11 @@ function createCardElement(item) {
     <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
       <span class="text-xs font-mono font-bold text-slate-400">${item.downloads || 0} downloads</span>
       <div class="flex items-center gap-2">
+        ${currentUser && (currentUser.role === 'Admin' || (currentUser && currentUser.id === item.authorId)) ? `
+          <button onclick="event.stopPropagation(); deleteModById('${item.id}', '${item.name.replace(/'/g, "\\'")}')" title="Delete Mod" class="p-1.5 hover:bg-red-500/20 text-slate-500 hover:text-red-400 rounded-lg transition-colors border border-transparent hover:border-red-500/30">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+          </button>
+        ` : ''}
         <button onclick="openDetail('${item.slug}', ${isPack})" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg border border-slate-700">
           Details
         </button>
@@ -252,11 +257,50 @@ async function triggerInstall(slug, isModpack) {
   window.location.href = protocolUri;
 }
 
+let currentDetailItem = null;
+
+// Delete Mod (Admin / Author)
+async function deleteModById(id, name) {
+  if (!confirm(`Are you sure you want to permanently delete "${name}"? This will remove all files and versions from the platform.`)) {
+    return;
+  }
+  const token = localStorage.getItem('rustcraft_jwt');
+  if (!token) {
+    alert('Please log in with an Admin or Developer account to delete mods.');
+    openAuthModal('login');
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}/mods/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+
+    alert(`Mod "${name}" was deleted successfully.`);
+    closeDetailModal();
+    await loadData();
+    navigateTo('mods');
+  } catch (e) {
+    alert(`Failed to delete mod: ${e.message}`);
+  }
+}
+
+function deleteCurrentMod() {
+  if (!currentDetailItem) return;
+  deleteModById(currentDetailItem.id, currentDetailItem.name);
+}
+
 // Detail Modal
 async function openDetail(slug, isModpack) {
   const item = isModpack ? allModpacks.find(p => p.slug === slug) : allMods.find(m => m.slug === slug);
   if (!item) return;
 
+  currentDetailItem = item;
   document.getElementById('modal-title').textContent = item.name;
   document.getElementById('modal-icon').src = item.iconUrl || `https://api.dicebear.com/7.x/shapes/svg?seed=${item.slug}`;
   document.getElementById('modal-desc').textContent = item.description || item.summary;
@@ -266,6 +310,17 @@ async function openDetail(slug, isModpack) {
 
   const btn = document.getElementById('modal-install-btn');
   btn.onclick = () => triggerInstall(item.slug, isModpack);
+
+  const deleteBtn = document.getElementById('modal-delete-btn');
+  if (deleteBtn) {
+    if (currentUser && (currentUser.role === 'Admin' || currentUser.id === item.authorId)) {
+      deleteBtn.classList.remove('hidden');
+      deleteBtn.classList.add('flex');
+    } else {
+      deleteBtn.classList.add('hidden');
+      deleteBtn.classList.remove('flex');
+    }
+  }
 
   document.getElementById('detail-modal').classList.remove('hidden');
   document.getElementById('detail-modal').classList.add('flex');
