@@ -1,0 +1,6 @@
+[mod]
+id = "engine_accelerator"
+name = "Engine Accelerator"
+version = "2.0.1"
+[compatibility]
+horizon_revision = "e2d8c3b1a0f4"

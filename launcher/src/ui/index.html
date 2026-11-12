@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rustcraft Launcher</title>
+  <!-- Tailwind CSS & Lucide Icons CDN for sleek modern styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      user-select: none;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+    .glow-orange {
+      box-shadow: 0 0 25px -5px rgba(249, 115, 22, 0.4);
+    }
+    .glow-green {
+      box-shadow: 0 0 30px -5px rgba(34, 197, 94, 0.5);
+    }
+  </style>
+</head>
+<body class="bg-[#090d16] text-slate-100 h-screen flex overflow-hidden">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-[#0d1322] border-r border-slate-800/80 flex flex-col justify-between p-4 z-20">
+    <div>
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-3 px-2 py-3 mb-6">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center glow-orange text-white shadow-lg">
+          <i data-lucide="zap" class="w-6 h-6 fill-white"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-orange-400 via-amber-300 to-yellow-400 bg-clip-text text-transparent">
+            RUSTCRAFT
+          </h1>
+          <p class="text-[10px] tracking-wider uppercase font-semibold text-slate-400">Horizon Engine Client</p>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="space-y-1.5" id="nav-container">
+        <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-semibold transition-all bg-orange-500/10 text-orange-400 border border-orange-500/30">
+          <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+          Dashboard
+        </button>
+        <button onclick="switchView('instances')" id="nav-instances" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+          <i data-lucide="boxes" class="w-4 h-4"></i>
+          Instances
+        </button>
+        <button onclick="switchView('mods')" id="nav-mods" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+          <i data-lucide="puzzle" class="w-4 h-4"></i>
+          Mods & HMODs
+        </button>
+        <button onclick="switchView('browser')" id="nav-browser" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+          <i data-lucide="store" class="w-4 h-4"></i>
+          Explore Catalog
+        </button>
+        <button onclick="switchView('console')" id="nav-console" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+          <i data-lucide="terminal" class="w-4 h-4"></i>
+          Game Log
+        </button>
+        <button onclick="switchView('settings')" id="nav-settings" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+          <i data-lucide="settings" class="w-4 h-4"></i>
+          Settings
+        </button>
+      </nav>
+    </div>
+
+    <!-- Bottom Account & Quick Status -->
+    <div class="space-y-3 pt-4 border-t border-slate-800/60">
+      <div class="flex items-center gap-3 px-2">
+        <img id="user-avatar" src="https://api.dicebear.com/7.x/identicon/svg?seed=RustcraftAdmin" class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700">
+        <div class="overflow-hidden">
+          <p id="user-name" class="text-xs font-bold text-slate-200 truncate">Rustcraft Player</p>
+          <div class="flex items-center gap-1.5 mt-0.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="text-[10px] text-emerald-400 font-medium">API Connected</span>
+          </div>
+        </div>
+      </div>
+      <div class="text-[10px] text-slate-500 px-2 flex justify-between">
+        <span>Launcher v1.0.0</span>
+        <span class="text-orange-400/80 font-mono">MIT Ready</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content View -->
+  <main class="flex-1 flex flex-col overflow-hidden relative">
+
+    <!-- Top Action Bar -->
+    <header class="h-16 bg-[#0c111e]/90 backdrop-blur border-b border-slate-800/80 px-6 flex items-center justify-between z-10">
+      <!-- Quick Instance Selector -->
+      <div class="flex items-center gap-3">
+        <label class="text-xs text-slate-400 font-medium">Selected Instance:</label>
+        <select id="active-instance-select" onchange="onActiveInstanceChange()" class="bg-slate-800/90 text-sm font-semibold text-slate-200 border border-slate-700/80 rounded-lg px-3 py-1.5 focus:outline-none focus:border-orange-500">
+          <!-- Populated dynamically -->
+        </select>
+      </div>
+
+      <!-- Quick Deep Link Tester Bar -->
+      <div class="flex items-center gap-2">
+        <div class="relative flex items-center">
+          <input type="text" id="deep-link-input" placeholder="rustcraft://install/..." value="rustcraft://install/mod/glowing-amethysts" class="bg-slate-900 border border-slate-700 text-xs text-slate-300 font-mono rounded-lg px-3 py-1.5 w-72 focus:outline-none focus:border-orange-500">
+          <button onclick="triggerDeepLinkSim()" title="Trigger Protocol Deep Link" class="absolute right-1 px-2 py-0.5 bg-orange-500/20 hover:bg-orange-500/40 text-orange-400 text-xs rounded font-medium border border-orange-500/30">
+            Install URL
+          </button>
+        </div>
+
+        <!-- Big Play Button -->
+        <button id="main-play-btn" onclick="launchActiveInstance()" class="flex items-center gap-2 px-6 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-white font-bold text-sm tracking-wide transition-all glow-green active:scale-95 shadow-lg">
+          <i data-lucide="play" class="w-4 h-4 fill-white"></i>
+          PLAY
+        </button>
+      </div>
+    </header>
+
+    <!-- Scrollable View Container -->
+    <div id="view-content" class="flex-1 overflow-y-auto p-6">
+
+      <!-- View: Dashboard -->
+      <div id="view-dashboard" class="space-y-6">
+        <!-- Hero Banner -->
+        <div class="relative rounded-2xl bg-gradient-to-r from-slate-900 via-orange-950/40 to-slate-900 border border-orange-500/20 p-6 overflow-hidden shadow-2xl">
+          <div class="absolute -right-10 -bottom-10 opacity-10 pointer-events-none">
+            <i data-lucide="zap" class="w-72 h-72 text-orange-500"></i>
+          </div>
+          <div class="relative z-10 max-w-xl">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-orange-500/20 text-orange-400 border border-orange-500/30 mb-2">
+              Next-Gen Ecosystem
+            </span>
+            <h2 class="text-3xl font-extrabold text-white tracking-tight">Experience Horizon with Rustcraft</h2>
+            <p class="text-sm text-slate-300 mt-2 leading-relaxed">
+              Completely independent launcher featuring instant HMOD auto-compilation, strict instance sandbox isolation, and 1-click web installs.
+            </p>
+            <div class="flex items-center gap-3 mt-4">
+              <button onclick="openCreateInstanceModal()" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold rounded-lg transition-colors shadow">
+                + Create New Instance
+              </button>
+              <button onclick="switchView('browser')" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-lg transition-colors border border-slate-700">
+                Browse Mods & Packs
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Instances Carousel / Grid -->
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+              <i data-lucide="boxes" class="w-5 h-5 text-orange-400"></i>
+              Your Instances
+            </h3>
+            <span class="text-xs text-slate-400" id="instance-summary-count">Loading instances...</span>
+          </div>
+          <div id="dashboard-instances-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Dynamic Instance Cards -->
+          </div>
+        </div>
+
+        <!-- Featured Mods & Packs from Backend -->
+        <div>
+          <h3 class="text-lg font-bold text-slate-100 flex items-center gap-2 mb-4">
+            <i data-lucide="sparkles" class="w-5 h-5 text-amber-400"></i>
+            Recommended for Horizon
+          </h3>
+          <div id="dashboard-featured-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Dynamic featured cards -->
+          </div>
+        </div>
+      </div>
+
+      <!-- View: Instances Manager -->
+      <div id="view-instances" class="hidden space-y-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-extrabold text-white">Instances Manager</h2>
+            <p class="text-xs text-slate-400 mt-1">Manage fully isolated profiles, memory allocation, and configurations.</p>
+          </div>
+          <button onclick="openCreateInstanceModal()" class="flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold rounded-xl shadow-lg transition-all">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            New Instance
+          </button>
+        </div>
+        <div id="instances-full-list" class="space-y-3">
+          <!-- Full instance items -->
+        </div>
+      </div>
+
+      <!-- View: Mod Manager -->
+      <div id="view-mods" class="hidden space-y-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-extrabold text-white">Installed Mods</h2>
+            <p class="text-xs text-slate-400 mt-1">
+              Active Instance: <span id="mods-view-instance-name" class="text-orange-400 font-semibold">Select an instance</span>
+            </p>
+          </div>
+          <!-- Dropzone to build from source directly -->
+          <div class="flex items-center gap-2">
+            <button onclick="openManualHmodBuildModal()" class="flex items-center gap-2 px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold rounded-xl transition-all">
+              <i data-lucide="hammer" class="w-4 h-4 text-orange-400"></i>
+              Build HMOD From Source
+            </button>
+          </div>
+        </div>
+        <div id="instance-mods-table" class="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden">
+          <!-- Table populated dynamically -->
+        </div>
+      </div>
+
+      <!-- View: Catalog Browser -->
+      <div id="view-browser" class="hidden space-y-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-extrabold text-white">Explore Rustcraft Catalog</h2>
+            <p class="text-xs text-slate-400 mt-1">Discover, build, and install verified mods and packs directly from the API.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="text" id="catalog-search" oninput="filterCatalog()" placeholder="Search mods & packs..." class="bg-slate-800 border border-slate-700 text-xs text-slate-200 rounded-lg px-3 py-2 w-64 focus:outline-none focus:border-orange-500">
+          </div>
+        </div>
+        <div id="catalog-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Catalog items -->
+        </div>
+      </div>
+
+      <!-- View: Console / Game Log -->
+      <div id="view-console" class="hidden space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-extrabold text-white">Engine Console & Process Output</h2>
+            <p class="text-xs text-slate-400 mt-1">Real-time telemetry, crash diagnostic logs, and mod hooks.</p>
+          </div>
+          <button onclick="clearConsole()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium rounded-lg border border-slate-700">
+            Clear Log
+          </button>
+        </div>
+        <div id="console-output" class="bg-black/90 border border-slate-800 rounded-2xl p-4 font-mono text-xs text-emerald-400 h-[500px] overflow-y-auto space-y-1 shadow-inner">
+          <div class="text-slate-500">[System] Rustcraft launcher logging session initialized.</div>
+        </div>
+      </div>
+
+      <!-- View: Settings -->
+      <div id="view-settings" class="hidden max-w-2xl space-y-6">
+        <h2 class="text-2xl font-extrabold text-white">Launcher Preferences</h2>
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 space-y-6">
+          <div class="space-y-2">
+            <label class="text-sm font-bold text-slate-200">Default RAM Allocation</label>
+            <div class="flex items-center gap-4">
+              <span class="text-xs font-mono text-slate-400">Min: 2048 MB</span>
+              <input type="range" min="1024" max="16384" step="512" value="4096" id="setting-ram" class="flex-1 accent-orange-500">
+              <span class="text-xs font-mono text-orange-400 font-bold" id="setting-ram-val">4096 MB</span>
+            </div>
+          </div>
+          <div class="space-y-2">
+            <label class="text-sm font-bold text-slate-200">JVM & Engine Arguments</label>
+            <input type="text" id="setting-jvm" value="-XX:+UseG1GC -Dsun.rmi.dgc.server.gcInterval=2147483646" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-xs font-mono text-slate-300 focus:outline-none focus:border-orange-500">
+          </div>
+          <div class="flex items-center justify-between pt-4 border-t border-slate-800">
+            <div>
+              <p class="text-sm font-bold text-slate-200">Auto-Update Checks</p>
+              <p class="text-xs text-slate-400">Periodically check for Horizon client and launcher updates</p>
+            </div>
+            <input type="checkbox" checked class="w-4 h-4 accent-orange-500">
+          </div>
+          <button onclick="savePreferences()" class="px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs rounded-xl transition-all shadow">
+            Save Settings
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Create Instance Modal -->
+  <div id="modal-create-instance" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+    <div class="bg-slate-900 border border-slate-700/80 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <i data-lucide="plus-circle" class="w-5 h-5 text-orange-400"></i>
+          Create New Instance
+        </h3>
+        <button onclick="closeCreateInstanceModal()" class="text-slate-400 hover:text-slate-200">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <label class="text-xs font-semibold text-slate-300">Instance Name</label>
+          <input type="text" id="modal-inst-name" placeholder="e.g. Modded Adventure 1.21" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-100 mt-1 focus:outline-none focus:border-orange-500">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-300">Game / Horizon Version</label>
+          <select id="modal-inst-version" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-100 mt-1 focus:outline-none focus:border-orange-500">
+            <option value="1.21.1">Horizon 1.21.1 (Recommended)</option>
+            <option value="1.20.4">Horizon 1.20.4</option>
+            <option value="1.19.4">Horizon 1.19.4 (Legacy)</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-300">Max RAM (MB)</label>
+          <input type="number" id="modal-inst-ram" value="4096" step="512" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-100 mt-1 focus:outline-none focus:border-orange-500">
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+        <button onclick="closeCreateInstanceModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg">Cancel</button>
+        <button onclick="submitCreateInstance()" class="px-5 py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold rounded-lg shadow">Create Instance</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress Notification Toast -->
+  <div id="progress-toast" class="fixed bottom-6 right-6 max-w-sm w-full bg-slate-900 border border-orange-500/40 rounded-2xl p-4 shadow-2xl hidden z-50">
+    <div class="flex items-center gap-3">
+      <div id="toast-spinner" class="w-6 h-6 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+      <div class="flex-1 overflow-hidden">
+        <p id="toast-title" class="text-xs font-bold text-white truncate">Installing Mod...</p>
+        <p id="toast-msg" class="text-[11px] text-slate-400 truncate">Preparing environment</p>
+      </div>
+      <span id="toast-pct" class="text-xs font-mono font-bold text-orange-400">0%</span>
+    </div>
+    <div class="w-full bg-slate-800 rounded-full h-1.5 mt-3 overflow-hidden">
+      <div id="toast-bar" class="bg-orange-500 h-1.5 transition-all duration-300 w-0"></div>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
