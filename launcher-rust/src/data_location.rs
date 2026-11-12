@@ -31,12 +31,14 @@ struct Location {
 
 pub fn bootstrap_path() -> Result<PathBuf> {
     // Portable installs and tests can keep their location pointer separate from the user profile.
-    if let Some(path) = std::env::var_os("HORIZON_LAUNCHER_LOCATION_FILE").filter(|p| !p.is_empty())
+    if let Some(path) = std::env::var_os("RUSTCRAFT_LAUNCHER_LOCATION_FILE")
+        .or_else(|| std::env::var_os("HORIZON_LAUNCHER_LOCATION_FILE"))
+        .filter(|p| !p.is_empty())
     {
         return pointer_path(Path::new(&path));
     }
     dirs::config_dir()
-        .map(|p| p.join("horizon-launcher-location").join("location.json"))
+        .map(|p| p.join("rustcraft-launcher-location").join("location.json"))
         .ok_or_else(|| "Cannot locate the platform configuration folder for location.json".into())
 }
 
@@ -45,7 +47,10 @@ fn overridden(name: &str) -> bool {
 }
 
 fn has_override() -> bool {
-    overridden("HORIZON_LAUNCHER_HOME") || overridden("HORIZON_HOME")
+    overridden("RUSTCRAFT_LAUNCHER_HOME")
+        || overridden("RUSTCRAFT_HOME")
+        || overridden("HORIZON_LAUNCHER_HOME")
+        || overridden("HORIZON_HOME")
 }
 
 /// Roots resolved once per process. `retry` clears it so a repaired location is read again.
@@ -217,7 +222,7 @@ pub fn resolve_at(bootstrap: &Path) -> Result<Option<Roots>> {
 /// Hold until process exit. Workers must enter before acquiring this shared lease.
 /// Override-based isolated runs do not touch the user's bootstrap lock.
 pub fn acquire_startup_lock() -> Result<Option<File>> {
-    if overridden("HORIZON_LAUNCHER_HOME") && overridden("HORIZON_HOME") {
+    if has_override() {
         Ok(None)
     } else {
         acquire_lock_at(&bootstrap_path()?).map(Some)

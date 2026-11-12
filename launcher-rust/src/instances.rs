@@ -18,7 +18,7 @@ use std::process::Command;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 /// The default instance's id: the game's home itself.
-pub const DEFAULT: &str = "horizon";
+pub const DEFAULT: &str = "rustcraft";
 const FILE: &str = "instances.json";
 /// Where new instances live, in the game's home.
 const OWN: &str = "instances";
@@ -294,7 +294,7 @@ fn list_in(game_home: &Path, data: &Path) -> Vec<Instance> {
     let mut store = Store::load(data);
     let mut found = vec![(
         DEFAULT.to_string(),
-        "Horizon".to_string(),
+        "Rustcraft".to_string(),
         Kind::Default,
         game_home.to_path_buf(),
         game_home.to_path_buf(),
@@ -313,7 +313,7 @@ fn list_in(game_home: &Path, data: &Path) -> Vec<Instance> {
         let before = store.instances.len();
         store
             .instances
-            .retain(|id, _| id == DEFAULT || id.contains(':') || own.contains(id));
+            .retain(|id, _| id == DEFAULT || id == "horizon" || id.contains(':') || own.contains(id));
         if store.instances.len() != before {
             if let Err(e) = store.save(data) {
                 eprintln!("Horizon: instances.json is not saved: {e}");

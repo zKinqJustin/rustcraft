@@ -179,7 +179,7 @@ impl Launcher {
             .flex()
             .items_center()
             .gap(px(4.))
-            .child(tab("Rust Edition", horizon, !java))
+            .child(tab("Rustcraft Edition", horizon, !java))
             .child(tab("Java Edition", java_icon, java))
     }
 
@@ -283,7 +283,7 @@ impl Launcher {
                 format!(
                     "· {}",
                     trf(
-                        "{count} on the official SMP",
+                        "{count} on Rustcraft SMP",
                         &[("count", &thousands(count))]
                     )
                 ),

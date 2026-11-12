@@ -119,7 +119,7 @@ fn builder() -> ureq::AgentBuilder {
         .timeout(Duration::from_secs(20))
         .timeout_connect(Duration::from_secs(10))
         .resolver(Interleaved(System))
-        .user_agent(&format!("horizon-launcher/{}", crate::backend::VERSION))
+        .user_agent(&format!("rustcraft-launcher/{}", crate::backend::VERSION))
 }
 
 /// A request to `url`: the launcher's user agent, a 20 s timeout, and the player's proxy when one
@@ -1180,7 +1180,7 @@ impl SecretStore for SystemStore {
             let attributes = vec![("service", SERVICE), ("account", key)];
             keyring
                 .create_item(
-                    "Horizon launcher: Minecraft account",
+                    "Rustcraft launcher: Minecraft account",
                     &attributes,
                     secret.as_bytes(),
                     true,

@@ -12,14 +12,14 @@ use std::path::Path;
 const FILE: &str = "servers.dat";
 /// Horizon's official survival server, named as the game lists it. Its address comes from
 /// `launcher/links.json` on main (`backend::Links`), so a move to a new host needs no release.
-pub const OFFICIAL_NAME: &str = "Horizon Official";
+pub const OFFICIAL_NAME: &str = "Rustcraft Official";
 /// The official server's address until links.json is read, and when it can't be.
-pub const OFFICIAL_ADDRESS: &str = horizon_telemetry::server_status::OFFICIAL_ADDRESS;
+pub const OFFICIAL_ADDRESS: &str = "play.rustcraft.net";
 /// Addresses the official server had before: lists that still hold one are moved to the current one.
-pub const OFFICIAL_PREVIOUS: &[&str] = horizon_telemetry::server_status::OFFICIAL_PREVIOUS;
+pub const OFFICIAL_PREVIOUS: &[&str] = &[];
 /// Beside servers.dat once the official server was offered, so a player who removes it never
 /// gets it back: the address offered, so a new one moves the list once. The game writes the same file.
-const OFFICIAL_MARKER: &str = "horizon_official_server.txt";
+const OFFICIAL_MARKER: &str = "rustcraft_official_server.txt";
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Server {
