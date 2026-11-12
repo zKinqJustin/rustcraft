@@ -165,3 +165,4 @@ class RustcraftModBuildSystem {
 }
 
 module.exports = RustcraftModBuildSystem;
+

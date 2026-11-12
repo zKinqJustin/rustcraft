@@ -9,10 +9,12 @@
     "test:e2e": "node test/integration.test.js",
     "test": "npm run test:backend && npm run test:launcher && npm run test:website && npm run test:e2e",
     "start:backend": "cd backend && node src/server.js",
-    "start:launcher": "cd launcher && node src/index.js",
+    "start:launcher": "launcher-rust\\target\\debug\\rustcraft-launcher.exe",
+    "build:launcher": "cd launcher-rust && cargo build --bin rustcraft-launcher",
     "start:website": "cd website && node server.js"
   },
   "keywords": ["rustcraft", "horizon", "minecraft", "launcher", "mods", "hmod"],
   "author": "Rustcraft Contributors",
   "license": "MIT"
 }
+

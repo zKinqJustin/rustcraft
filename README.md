@@ -78,3 +78,4 @@ npm run start
 
 Rustcraft steht unter der [MIT License](LICENSE).  
 Basiert auf den technischen Grundlagen und Konzepten von [Horizon](https://github.com/horizon-rust/horizon). Siehe [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+

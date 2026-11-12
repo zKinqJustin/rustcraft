@@ -41,9 +41,8 @@ function saveFile(subfolder, filename, buffer) {
  * Read file buffer from storage
  */
 function readFile(relPath) {
-  const safeRel = sanitizeFileName(relPath.split('/').join(path.sep));
-  const fullPath = path.join(STORAGE_ROOT, safeRel);
-  if (!fs.existsSync(fullPath)) return null;
+  const fullPath = getFilePath(relPath);
+  if (!fullPath || !fs.existsSync(fullPath)) return null;
   return fs.readFileSync(fullPath);
 }
 

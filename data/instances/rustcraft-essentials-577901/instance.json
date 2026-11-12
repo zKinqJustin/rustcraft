@@ -1,0 +1,40 @@
+{
+  "id": "rustcraft-essentials-577901",
+  "name": "Rustcraft Essentials",
+  "gameVersion": "1.21.1",
+  "icon": "Package",
+  "memoryMinMb": 2048,
+  "memoryMaxMb": 4096,
+  "jvmArgs": "-XX:+UseG1GC -Dsun.rmi.dgc.server.gcInterval=2147483646",
+  "gameArgs": "",
+  "playTimeMinutes": 15,
+  "lastPlayed": "2026-11-12T15:12:36.652Z",
+  "modpackId": "pack-rustcraft-essentials",
+  "createdAt": "2026-11-12T15:12:36.588Z",
+  "mods": [
+    {
+      "filename": "engine_accelerator-2.0.1.hnmod",
+      "activeName": "engine_accelerator-2.0.1.hnmod",
+      "kind": "native",
+      "enabled": true,
+      "size": 128,
+      "lastModified": "2026-11-12T15:12:36.632Z"
+    },
+    {
+      "filename": "glowing_amethysts.hmod",
+      "activeName": "glowing_amethysts.hmod",
+      "kind": "content",
+      "enabled": true,
+      "size": 199,
+      "lastModified": "2026-11-12T15:12:36.608Z"
+    },
+    {
+      "filename": "kinetic_pipes.hmod",
+      "activeName": "kinetic_pipes.hmod",
+      "kind": "content",
+      "enabled": true,
+      "size": 189,
+      "lastModified": "2026-11-12T15:12:36.621Z"
+    }
+  ]
+}

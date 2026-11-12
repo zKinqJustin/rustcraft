@@ -45,3 +45,4 @@ router.get('/launcher/install/:type/:id', launcherController.resolveInstallPaylo
 router.get('/launcher/updates', launcherController.checkUpdates);
 
 module.exports = router;
+

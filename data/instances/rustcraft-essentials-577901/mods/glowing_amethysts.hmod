@@ -1,0 +1,8 @@
+format = 1
+id = "glowing_amethysts"
+name = "Glowing Amethysts"
+version = "1.0.0"
+description = "Illuminating amethyst crystals"
+authors = ["RustModder"]
+game = "1.21.1"
+capabilities = ["registries"]

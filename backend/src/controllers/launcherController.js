@@ -20,6 +20,12 @@ async function resolveInstallPayload(req, res) {
 
       if (!version) return res.status(404).json({ error: 'Version not found' });
 
+      // Dynamically compute exact file hash to avoid CRLF disk deviations
+      const { readFile } = require('../services/storage');
+      const { sha256 } = require('../services/security');
+      const fileBytes = readFile(version.filePath);
+      const exactSha = fileBytes ? sha256(fileBytes) : version.sha256;
+
       return res.json({
         type: 'mod',
         action: 'install_mod',
@@ -31,8 +37,8 @@ async function resolveInstallPayload(req, res) {
           version: version.version,
           gameVersion: version.gameVersion,
           filename: version.filename,
-          sha256: version.sha256,
-          fileSize: version.fileSize,
+          sha256: exactSha,
+          fileSize: fileBytes ? fileBytes.length : version.fileSize,
           isSourceBuildRequired: Boolean(version.isSourceBuildRequired),
           downloadUrl: `/api/v1/mods/version/${version.id}/download`,
           dependencies: version.dependencies || []

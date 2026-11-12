@@ -12,8 +12,10 @@ pnpm-debug.log*
 
 # Rust & Cargo
 target/
+**/target/
 **/*.rs.bk
 Cargo.lock
+**/Cargo.lock
 
 # Build outputs & dist
 dist/
@@ -41,3 +43,4 @@ tmp/
 .DS_Store
 Thumbs.db
 Desktop.ini
+

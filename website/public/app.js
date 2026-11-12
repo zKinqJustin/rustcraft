@@ -5,7 +5,7 @@ let allMods = [];
 let allModpacks = [];
 let currentUser = null;
 let currentAuthMode = 'login';
-let selectedStudioMods = new Set(['glowing-amethysts', 'kinetic-pipes']);
+let selectedStudioMods = new Set();
 
 document.addEventListener('DOMContentLoaded', async () => {
   if (window.lucide) window.lucide.createIcons();
@@ -48,7 +48,8 @@ async function loadData() {
     allModpacks = packsRes.modpacks || [];
 
     if (statusRes.stats) {
-      document.getElementById('stat-mods').textContent = `${statusRes.stats.mods}+`;
+      document.getElementById('stat-mods').textContent = `${statusRes.stats.mods}`;
+      document.getElementById('stat-downloads').textContent = `${statusRes.stats.modpacks}`;
     }
 
     renderFeaturedHome();
@@ -67,6 +68,21 @@ function renderFeaturedHome() {
   container.innerHTML = '';
 
   const featured = [...allMods, ...allModpacks.map(p => ({ ...p, isModpack: true }))].slice(0, 3);
+  if (featured.length === 0) {
+    container.innerHTML = `
+      <div class="col-span-3 p-8 bg-slate-900/40 border border-slate-800 rounded-2xl text-center space-y-2">
+        <i data-lucide="package-open" class="w-10 h-10 text-slate-600 mx-auto"></i>
+        <h3 class="text-sm font-bold text-slate-300">Catalog Ready for Content</h3>
+        <p class="text-xs text-slate-500">No projects published yet. Verified developers can submit Content Mods (.hmod) and Modpacks.</p>
+        <button onclick="navigateTo('upload')" class="mt-2 px-4 py-1.5 bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs rounded-lg shadow">
+          Publish Project
+        </button>
+      </div>
+    `;
+    if (window.lucide) window.lucide.createIcons();
+    return;
+  }
+
   featured.forEach(item => {
     const card = createCardElement(item);
     container.appendChild(card);
@@ -80,6 +96,21 @@ function renderModsGrid(mods) {
   if (!grid) return;
   grid.innerHTML = '';
 
+  if (mods.length === 0) {
+    grid.innerHTML = `
+      <div class="col-span-3 p-12 bg-slate-900/40 border border-slate-800 rounded-3xl text-center space-y-3">
+        <i data-lucide="puzzle" class="w-12 h-12 text-slate-600 mx-auto"></i>
+        <h3 class="text-base font-bold text-slate-200">No Mods Published Yet</h3>
+        <p class="text-xs text-slate-400 max-w-sm mx-auto">This repository is clean and ready. Upload your own .hmod or .hnmod projects to make them available here.</p>
+        <button onclick="navigateTo('upload')" class="px-5 py-2 bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs rounded-xl shadow glow-orange">
+          Upload New Mod
+        </button>
+      </div>
+    `;
+    if (window.lucide) window.lucide.createIcons();
+    return;
+  }
+
   mods.forEach(mod => {
     grid.appendChild(createCardElement(mod));
   });
@@ -91,6 +122,21 @@ function renderModpacksGrid(packs) {
   const grid = document.getElementById('modpacks-grid');
   if (!grid) return;
   grid.innerHTML = '';
+
+  if (packs.length === 0) {
+    grid.innerHTML = `
+      <div class="col-span-2 p-12 bg-slate-900/40 border border-slate-800 rounded-3xl text-center space-y-3">
+        <i data-lucide="boxes" class="w-12 h-12 text-slate-600 mx-auto"></i>
+        <h3 class="text-base font-bold text-slate-200">No Modpacks Available</h3>
+        <p class="text-xs text-slate-400 max-w-sm mx-auto">Create a customized profile using our visual Modpack Studio.</p>
+        <button onclick="navigateTo('studio')" class="px-5 py-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-white font-bold text-xs rounded-xl shadow glow-orange">
+          Launch Modpack Studio
+        </button>
+      </div>
+    `;
+    if (window.lucide) window.lucide.createIcons();
+    return;
+  }
 
   packs.forEach(pack => {
     grid.appendChild(createCardElement({ ...pack, isModpack: true }));
@@ -413,3 +459,4 @@ function handleHomeSearch() {
     applyModFilters();
   }
 }
+
