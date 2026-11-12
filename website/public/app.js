@@ -232,29 +232,28 @@ function applyModFilters() {
 
 // 1-Click Install Handler
 async function triggerInstall(slug, isModpack) {
-  const protocolUri = isModpack 
-    ? `rustcraft://install/modpack/${slug}`
-    : `rustcraft://install/mod/${slug}`;
-
-  console.log(`[Platform] Triggering 1-Click Install: ${protocolUri}`);
-
-  // 1. Try direct HTTP bridge to local launcher if running
   try {
-    const res = await fetch(`${LAUNCHER_BASE}/api/launcher/deep-link`, {
+    const res = await fetch(`${API_BASE}/launcher/install-local/mod/${slug}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ uri: protocolUri })
+      headers: { 'Content-Type': 'application/json' }
     });
-    if (res.ok) {
-      alert(`Installation command successfully delivered to Rustcraft Launcher for "${slug}"!`);
+    const data = await res.json();
+    if (res.ok && data.success) {
+      alert(`✅ ${data.message}\n\nDie Mod ist jetzt in Rustcraft einsatzbereit.`);
+      await loadData();
       return;
     }
-  } catch (_) {
-    // Launcher not responding via local HTTP, invoke native protocol
+  } catch (e) {
+    console.error('Local direct install error:', e);
   }
 
-  // 2. Invoke browser protocol handler
-  window.location.href = protocolUri;
+  // Fallback: direct download link
+  const mod = allMods.find(m => m.slug === slug);
+  if (mod && mod.latestVersionId) {
+    window.location.href = `${API_BASE}/mods/version/${mod.latestVersionId}/download`;
+  } else {
+    alert(`Mod "${slug}" heruntergeladen.`);
+  }
 }
 
 let currentDetailItem = null;

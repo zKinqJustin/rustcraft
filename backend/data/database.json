@@ -24,7 +24,7 @@
   ],
   "mods": [
     {
-      "id": "5e87f59c-812f-4079-b07c-a5daf91b3fa4",
+      "id": "db1bb06c-7c6a-4376-ad35-509458c5f580",
       "name": "BetterF3",
       "slug": "betterf3",
       "summary": "Its a Better F3 Screen",
@@ -34,32 +34,33 @@
         "utility"
       ],
       "supportedGameVersions": [
-        "1.21.1"
+        "26.3"
       ],
       "authorId": "user-admin-01",
-      "downloads": 0,
+      "downloads": 1,
       "likes": 0,
       "iconUrl": "https://api.dicebear.com/7.x/shapes/svg?seed=BetterF3",
       "screenshots": [],
       "repositoryUrl": "",
       "license": "MIT",
-      "createdAt": "2026-11-12T16:27:15.987Z"
+      "createdAt": "2026-11-12T17:17:47.155Z",
+      "updatedAt": "2026-11-12T17:27:49.582Z"
     }
   ],
   "mod_versions": [
     {
-      "id": "dec8f9ff-047b-41fb-9a96-a951b8fa8e07",
-      "modId": "5e87f59c-812f-4079-b07c-a5daf91b3fa4",
+      "id": "0463714d-5e51-43c2-bc02-634011bea38e",
+      "modId": "db1bb06c-7c6a-4376-ad35-509458c5f580",
       "version": "1.0.0",
-      "changelog": "Added customizable HUD elements",
-      "gameVersion": "1.21.1",
-      "filename": "BetterF3-1.0.0.hnmod",
-      "filePath": "mods_5e87f59c-812f-4079-b07c-a5daf91b3fa4/BetterF3-1.0.0.hnmod",
-      "fileSize": 50,
-      "sha256": "27ef88c67e44ee1a4bd8e8d8e6339afdca3fe302a3eaa2debbd994d01c6c2c82",
+      "changelog": "Initial release",
+      "gameVersion": "26.3",
+      "filename": "betterf3-1.0.0.hnmod",
+      "filePath": "mods_db1bb06c-7c6a-4376-ad35-509458c5f580/betterf3-1.0.0.hnmod",
+      "fileSize": 72820,
+      "sha256": "6903e9fd75fc89e1bf780c28944cd4483800e02a258cd69f794a5cbe648a0d9e",
       "isSourceBuildRequired": false,
       "dependencies": [],
-      "createdAt": "2026-11-12T16:44:27.919Z"
+      "createdAt": "2026-11-12T17:17:47.198Z"
     }
   ],
   "modpacks": [],

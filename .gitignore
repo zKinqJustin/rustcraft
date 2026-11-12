@@ -18,6 +18,9 @@ Cargo.lock
 **/Cargo.lock
 
 # Build outputs & dist
+*.exe
+*.dll
+*.pdb
 dist/
 build/
 out/
