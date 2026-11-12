@@ -53,7 +53,7 @@ members = [
     "crates/horizon-shader-api",
     "crates/horizon-release-sign",
     "crates/horizon-mod-deps",
-    "xtask",
+    "launcher-rust",
 ]
 resolver = "2"
 

@@ -9,7 +9,7 @@ impl Launcher {
     /// hasn't read it yet. The data question comes first.
     pub(crate) fn asking_owner(&self) -> bool {
         (self.owner == Some(false) || sign_in_preview())
-            && (self.owner_screen_open || !self.settings.owner_notice_seen || sign_in_preview())
+            && (self.owner_screen_open || sign_in_preview())
             && !self.asking_consent()
             && self.opening.is_none()
     }
@@ -68,11 +68,11 @@ impl Launcher {
                     .child(tr("Sign in to play").to_string()),
             )
             .child(line(
-                "Horizon needs a Microsoft account that owns Minecraft: Java Edition, like other launchers.",
+                "Rustcraft needs a Microsoft account that owns Minecraft: Java Edition, like other launchers.",
                 n.ink_soft,
             ))
             .child(line(
-                "No Minecraft install needed: Horizon downloads it from Mojang for your account.",
+                "No Minecraft install needed: Rustcraft downloads it from Mojang for your account.",
                 n.ink_soft,
             ));
         let raised = || {
@@ -308,11 +308,11 @@ impl Launcher {
                     .flex_col()
                     .gap(px(8.))
                     .child(ui::text(14., FontWeight::NORMAL, ink::BODY).child(tr(
-                        "Horizon needs a Microsoft account that owns Minecraft: Java Edition, like other launchers.",
+                        "Rustcraft needs a Microsoft account that owns Minecraft: Java Edition, like other launchers.",
                     )))
                     .child(ui::text(14., FontWeight::NORMAL, ink::BODY).child(tr(
-                        "No Minecraft install needed: Horizon downloads it from Mojang for your account.",
-))),
+                        "No Minecraft install needed: Rustcraft downloads it from Mojang for your account.",
+                    ))),
             );
         card = match state {
             Shown::Code(uri, user_code) => {
