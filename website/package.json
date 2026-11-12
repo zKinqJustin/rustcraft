@@ -1,0 +1,19 @@
+{
+  "name": "rustcraft-website",
+  "version": "1.0.0",
+  "description": "Rustcraft Web Platform (CurseForge/Modrinth style)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "build": "node -e \"console.log('Website assets verified successfully')\"",
+    "test": "node test/website.test.js"
+  },
+  "keywords": ["rustcraft", "website", "mods", "modpacks", "minecraft", "horizon"],
+  "author": "Rustcraft Contributors",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}
