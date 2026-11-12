@@ -125,7 +125,7 @@ class DeepLinkHandler {
             await this.instanceManager.installModIntoInstance(instance.id, {
               sourcePathOrBuffer: modBuffer,
               filename: modPayload.target.filename,
-              expectedSha256: modPayload.target.sha256,
+              expectedSha256: modPayload.target.sha256 || modRef.sha256,
               onProgress: (p) => notify(`  ${modRef.id}: ${p.message}`, pct)
             });
           }

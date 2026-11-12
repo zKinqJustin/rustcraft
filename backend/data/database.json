@@ -39,6 +39,36 @@
       "avatarUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=TestUser_1794495948305",
       "bio": "",
       "createdAt": "2026-11-12T15:05:48.363Z"
+    },
+    {
+      "id": "20bccce9-8352-48d5-b176-d3e880a2ba4b",
+      "username": "TestUser_1794496399008",
+      "email": "test_1794496399008@rustcraft.net",
+      "passwordHash": "59c95b4de7e5e583480178c0fc0436eb:f92a3c3206c0f9c93e2fd8f01d1c0ef44f6690367a49543528c51018cfc130084671a40e4d5fe3e53eeddee3d12ebd7ba70d8ecfaa02d9799ed0019738051795",
+      "role": "Developer",
+      "avatarUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=TestUser_1794496399008",
+      "bio": "",
+      "createdAt": "2026-11-12T15:13:19.063Z"
+    },
+    {
+      "id": "e7ed26b4-cadd-43a7-8a2c-e09d4d10186b",
+      "username": "TestUser_1794496422664",
+      "email": "test_1794496422664@rustcraft.net",
+      "passwordHash": "05bc0e42d96a18e4301119b53e02bc1c:bba10b9b056c7633f19327f312aff4fd4c9d85afa892eaeb117c337fd268ce74498a52fa682baceb426a6efe28354d1c43aa5876fbf193955f0cf554f86cdff4",
+      "role": "Developer",
+      "avatarUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=TestUser_1794496422664",
+      "bio": "",
+      "createdAt": "2026-11-12T15:13:42.721Z"
+    },
+    {
+      "id": "872a0d5a-eef5-42e6-9149-126c84bf1504",
+      "username": "TestUser_1794496463504",
+      "email": "test_1794496463504@rustcraft.net",
+      "passwordHash": "47f5f7bc1ce08398e8f1488375a601db:f8cc5676d361d5b27c0f84a9cb35ac88dac2b7a634a16eb2b59c182f7cc152db28d98e2ce0c09bd6c2fbd3ba2e61d21147a6a3bfbc5b2e4dff6c42e2343aa9b2",
+      "role": "Developer",
+      "avatarUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=TestUser_1794496463504",
+      "bio": "",
+      "createdAt": "2026-11-12T15:14:23.561Z"
     }
   ],
   "mods": [
@@ -58,14 +88,14 @@
         "1.20.4"
       ],
       "authorId": "user-dev-01",
-      "downloads": 1421,
+      "downloads": 1424,
       "likes": 89,
       "iconUrl": "https://api.dicebear.com/7.x/shapes/svg?seed=GlowingAmethysts",
       "screenshots": [],
       "repositoryUrl": "https://github.com/rustcraft/sample-glowing-amethysts",
       "license": "MIT",
       "createdAt": "2026-11-12T15:05:48.151Z",
-      "updatedAt": "2026-11-12T15:12:36.593Z"
+      "updatedAt": "2026-11-12T15:14:26.601Z"
     },
     {
       "id": "mod-kinetic-pipes",
@@ -82,14 +112,14 @@
         "1.21.1"
       ],
       "authorId": "user-dev-01",
-      "downloads": 3251,
+      "downloads": 3254,
       "likes": 215,
       "iconUrl": "https://api.dicebear.com/7.x/shapes/svg?seed=KineticPipes",
       "screenshots": [],
       "repositoryUrl": "https://github.com/rustcraft/sample-kinetic-pipes",
       "license": "MIT",
       "createdAt": "2026-11-12T15:05:48.156Z",
-      "updatedAt": "2026-11-12T15:12:36.612Z"
+      "updatedAt": "2026-11-12T15:14:26.620Z"
     },
     {
       "id": "mod-native-optimizer",
@@ -105,14 +135,14 @@
         "1.21.1"
       ],
       "authorId": "user-dev-01",
-      "downloads": 5801,
+      "downloads": 5804,
       "likes": 412,
       "iconUrl": "https://api.dicebear.com/7.x/shapes/svg?seed=Accelerator",
       "screenshots": [],
       "repositoryUrl": "https://github.com/rustcraft/engine-accelerator",
       "license": "MIT",
       "createdAt": "2026-11-12T15:05:48.161Z",
-      "updatedAt": "2026-11-12T15:12:36.625Z"
+      "updatedAt": "2026-11-12T15:14:26.635Z"
     }
   ],
   "mod_versions": [
