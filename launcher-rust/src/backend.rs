@@ -10,13 +10,18 @@ use std::process::{Child, ChildStdin, Command, Stdio};
 use std::sync::mpsc::Sender;
 use std::sync::{Arc, Mutex};
 
-pub const REPO: &str = "horizon-rust/horizon";
-pub const README_URL: &str = "https://github.com/horizon-rust/horizon/blob/main/launcher/README.md";
+pub const REPO: &str = "zKinqJustin/rustcraft";
+pub const README_URL: &str = "https://github.com/zKinqJustin/rustcraft";
 /// The players' page on connecting an AI agent (the website's docs/agents.md).
-pub const AGENT_DOCS_URL: &str = "https://playhorizon.dev/docs/agents";
-/// This launcher's version: the release workflow sets `HORIZON_LAUNCHER_VERSION` from the
+pub const AGENT_DOCS_URL: &str = "https://github.com/zKinqJustin/rustcraft";
+/// This launcher's version: the release workflow sets `RUSTCRAFT_LAUNCHER_VERSION` from the
 /// tag it builds (no version-bump commits); other builds say Cargo.toml's.
-pub const VERSION: &str = version_or(option_env!("HORIZON_LAUNCHER_VERSION"));
+pub const VERSION: &str = version_or(
+    match option_env!("RUSTCRAFT_LAUNCHER_VERSION") {
+        Some(v) => Some(v),
+        None => option_env!("HORIZON_LAUNCHER_VERSION"),
+    },
+);
 /// Launcher releases are tagged `launcher@X.Y.Z` from 0.2 on (docs/versioning.md), and Horizon's
 /// own `vX.Y.Z`. Before 0.2 they were `launcher-vX.Y.Z` and `vYYYY.MM.DD[.N]`: every 0.2 tag is
 /// newer than every one of those ([`release_order`]).
@@ -497,7 +502,7 @@ pub(crate) const CLIENT: &str = if cfg!(windows) {
 pub(crate) fn agent(url: &str) -> ureq::Agent {
     crate::proxy::agent(
         ureq::AgentBuilder::new()
-            .user_agent(&format!("horizon-launcher/{VERSION}"))
+            .user_agent(&format!("rustcraft-launcher/{VERSION}"))
             // A connection that goes quiet fails instead of waiting for ever.
             .timeout_connect(std::time::Duration::from_secs(15))
             .timeout_read(std::time::Duration::from_secs(60)),
@@ -864,14 +869,11 @@ impl Default for Links {
     /// What the launcher uses until (or unless) it can read links.json.
     fn default() -> Self {
         Self {
-            discord: "https://discord.gg/playhorizon".into(),
-            sponsor: "https://github.com/sponsors/ludovic111".into(),
-            website: "https://playhorizon.dev".into(),
+            discord: "https://discord.gg/rustcraft".into(),
+            sponsor: "https://github.com/zKinqJustin/rustcraft".into(),
+            website: "http://localhost:3000".into(),
             official_server: crate::server_list::OFFICIAL_ADDRESS.into(),
-            official_server_previous: crate::server_list::OFFICIAL_PREVIOUS
-                .iter()
-                .map(|a| a.to_string())
-                .collect(),
+            official_server_previous: vec![],
         }
     }
 }
@@ -917,9 +919,12 @@ pub fn links() -> Links {
         .map_or_else(Links::default, |text| Links::parse(&text))
 }
 
-/// The launcher's data folder; `HORIZON_LAUNCHER_HOME` overrides it (for tests and scripts).
+/// The launcher's data folder; `RUSTCRAFT_LAUNCHER_HOME` overrides it (for tests and scripts).
 pub fn data_dir() -> PathBuf {
-    if let Some(home) = std::env::var_os("HORIZON_LAUNCHER_HOME").filter(|h| !h.is_empty()) {
+    if let Some(home) = std::env::var_os("RUSTCRAFT_LAUNCHER_HOME")
+        .or_else(|| std::env::var_os("HORIZON_LAUNCHER_HOME"))
+        .filter(|h| !h.is_empty())
+    {
         return PathBuf::from(home);
     }
     // A location that does not open stands in as the default folders, as
@@ -929,7 +934,7 @@ pub fn data_dir() -> PathBuf {
     }
     dirs::data_dir()
         .unwrap_or_else(std::env::temp_dir)
-        .join("horizon-launcher")
+        .join("rustcraft-launcher")
 }
 
 /// A canonical path without Windows' verbatim prefix: `canonicalize` gives `\\?\C:\...` there,
@@ -960,7 +965,10 @@ fn tool_safe(path: &Path) -> bool {
 /// link (horizon-mixins refuses one, and macOS's /tmp is one). On Windows, when the resolved
 /// path isn't [`tool_safe`], [`windows_build_dir`] names the same folder a way MinGW-w64 can open.
 pub fn build_dir() -> PathBuf {
-    if std::env::var_os("HORIZON_LAUNCHER_HOME").is_none_or(|p| p.is_empty()) {
+    if std::env::var_os("RUSTCRAFT_LAUNCHER_HOME")
+        .or_else(|| std::env::var_os("HORIZON_LAUNCHER_HOME"))
+        .is_none_or(|p| p.is_empty())
+    {
         // A location that does not open stands in as the default folders, as
         // `data_location::startup` makes it for the window: never a panic here.
         if let Ok(Some(roots)) = crate::data_location::configured_roots() {
@@ -1007,7 +1015,7 @@ fn ascii_build_dir(real: &Path, program_data: Option<PathBuf>) -> PathBuf {
         .unwrap_or_else(|| PathBuf::from(r"C:\ProgramData"));
     let key = Sha256::digest(real.as_os_str().as_encoded_bytes());
     let key: String = key[..4].iter().map(|b| format!("{b:02x}")).collect();
-    public.join(format!("horizon-launcher-{key}"))
+    public.join(format!("rustcraft-launcher-{key}"))
 }
 
 /// `GetShortPathNameW`: `path`'s short (8.3) name, or None on error. A folder with no short
@@ -2646,11 +2654,14 @@ pub fn prepare_in_process(options: &prepare::Options, log: &dyn Fn(String)) -> R
     .map(|_| ())
 }
 
-/// Where the game keeps saves and options.txt: `HORIZON_HOME`, else `horizon` in the platform's
-/// data folder (~/.local/share/horizon on Linux, as the release folders' horizon.sh uses). It is
+/// Where the game keeps saves and options.txt: `RUSTCRAFT_HOME`, else `rustcraft` in the platform's
+/// data folder (~/.local/share/rustcraft on Linux). It is
 /// never inside a version folder, so installing, updating or removing a version keeps the saves.
 pub fn game_home() -> PathBuf {
-    if let Some(home) = std::env::var_os("HORIZON_HOME").filter(|h| !h.is_empty()) {
+    if let Some(home) = std::env::var_os("RUSTCRAFT_HOME")
+        .or_else(|| std::env::var_os("HORIZON_HOME"))
+        .filter(|h| !h.is_empty())
+    {
         return PathBuf::from(home);
     }
     // A location that does not open stands in as the default folders, as
@@ -2660,7 +2671,7 @@ pub fn game_home() -> PathBuf {
     }
     dirs::data_dir()
         .unwrap_or_else(std::env::temp_dir)
-        .join("horizon")
+        .join("rustcraft")
 }
 
 /// Whether No AI is on: every AI feature hidden and off (`horizon_platform::no_ai`, kept in the

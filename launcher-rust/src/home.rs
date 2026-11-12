@@ -70,7 +70,7 @@ impl Launcher {
                 .child(format!(
                     "· {}",
                     trf(
-                        "{count} on the official SMP",
+                        "{count} on Rustcraft SMP",
                         &[("count", &thousands(count))]
                     )
                 ))

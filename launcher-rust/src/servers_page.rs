@@ -1442,25 +1442,8 @@ impl Launcher {
         }
         // The banner, with a "Hide" once it has been on screen a while: hiding it hides the
         // sidebar's card too, for good. Nothing at all once hidden.
-        let partner = (!self.settings.partner_hidden).then(|| {
-            let mut slot = div().relative().w(px(600.)).child(super::partner::banner(
-                "partner-servers",
-                600.,
-                &t,
-            ));
-            if self.settings.partner_seen_secs >= super::partner::SEEN_BEFORE_HIDE {
-                slot = slot.child(
-                    super::partner::hide_button("partner-servers-hide", &t).on_click(cx.listener(
-                        |this, _: &ClickEvent, _, cx| {
-                            this.settings.partner_hidden = true;
-                            this.save_settings();
-                            cx.notify();
-                        },
-                    )),
-                );
-            }
-            slot
-        });
+        // Partner ads removed for Rustcraft
+        let partner: Option<Div> = None;
         if self.servers.list.is_empty() {
             return page
                 .child(centered(

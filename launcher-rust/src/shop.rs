@@ -32,8 +32,8 @@ pub fn shown(claim: &Claim) -> bool {
 /// Whether the top bar has the Wardrobe page: `HORIZON_COSMETICS=1` asked for it (`forced`), or
 /// the service's last answer (`status`) or the account's own (`kept`, from its last visit) shows
 /// the founder set. Cosmetics being on in the game (the default) doesn't: the page waits for it.
-pub fn in_top_bar(forced: bool, status: Option<&Claim>, kept: Option<&Claim>) -> bool {
-    forced || status.is_some_and(shown) || kept.is_some_and(shown)
+pub fn in_top_bar(_forced: bool, _status: Option<&Claim>, _kept: Option<&Claim>) -> bool {
+    false
 }
 
 /// The website's page that opens Paddle's checkout for `txn`, or None if `txn` doesn't look like
