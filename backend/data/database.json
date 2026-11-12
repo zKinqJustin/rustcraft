@@ -4,286 +4,35 @@
       "id": "user-admin-01",
       "username": "RustcraftAdmin",
       "email": "admin@rustcraft.net",
-      "passwordHash": "95e1d33fb770e2264c51a199012b7707:bf1862d413fb7502f9acc3a1c97fe322e6215ba46c4521d7171b11f39b322f25f868c819d4fb718e945e299fc73dcc94dfeca1765da9c2230285f1e31837cd21",
+      "passwordHash": "349912be5f973719946571597a731efc:eb362eb681ef40e21b8c66e2c366ff55938bf8c9ce75e71465bf6495bebe0413e00fc9dca029c2ea2ddaa5ceeeeb62c828fe656f461e7127e997f8c5b36aa081",
       "role": "Admin",
       "avatarUrl": "https://api.dicebear.com/7.x/bottts/svg?seed=RustcraftAdmin",
-      "bio": "Rustcraft Lead Administrator and System Maintainer",
-      "createdAt": "2026-11-12T15:05:48.143Z"
+      "bio": "Rustcraft Lead Administrator",
+      "createdAt": "2026-11-12T15:05:00.000Z"
     },
     {
       "id": "user-dev-01",
-      "username": "RustModder",
-      "email": "modder@rustcraft.net",
-      "passwordHash": "cf869d4d6106e4475c9c4487c3f32b50:9cbb634b61be856014a4bfe5c44187df43906bafb8573d17c692b4a75ed2f8316aa8e46d8c5192d5a6fdbb49491fda82b56fb831046cb7ad1b04b2da58387b4a",
+      "username": "Developer",
+      "email": "developer@rustcraft.net",
+      "passwordHash": "349912be5f973719946571597a731efc:eb362eb681ef40e21b8c66e2c366ff55938bf8c9ce75e71465bf6495bebe0413e00fc9dca029c2ea2ddaa5ceeeeb62c828fe656f461e7127e997f8c5b36aa081",
       "role": "Developer",
-      "avatarUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=RustModder",
-      "bio": "Creator of high-performance Horizon & Rustcraft mods",
-      "createdAt": "2026-11-12T15:05:48.149Z"
-    },
-    {
-      "id": "user-player-01",
-      "username": "BlockMiner",
-      "email": "player@rustcraft.net",
-      "passwordHash": "01375c46ddd92b397d1f3ce1100f6dc1:5914e701f30161fcea8a6f8e51170af1d31404c146cb44f4ca803dd8e2b70cab8cd0e137f36e9f64b22190b468647c8922295d771a26f8903e590a7288ef1040",
-      "role": "User",
-      "avatarUrl": "https://api.dicebear.com/7.x/pixel-art/svg?seed=BlockMiner",
-      "bio": "Minecraft and Horizon enthusiast",
-      "createdAt": "2026-11-12T15:05:48.150Z"
-    },
-    {
-      "id": "8bcef8bb-e7f8-466a-a387-1f0999116dab",
-      "username": "TestUser_1794495948305",
-      "email": "test_1794495948305@rustcraft.net",
-      "passwordHash": "16e60bcd470adee6a869caaee8b3c820:50d36a36d76454a4457a549012dd49a20f49cfeb3724a75f3c4e626734bf50273b2cda9ab0998905e65dfa41b958700efc728c91c98c73e4492b3bdb07956fb0",
-      "role": "Developer",
-      "avatarUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=TestUser_1794495948305",
-      "bio": "",
-      "createdAt": "2026-11-12T15:05:48.363Z"
-    },
-    {
-      "id": "20bccce9-8352-48d5-b176-d3e880a2ba4b",
-      "username": "TestUser_1794496399008",
-      "email": "test_1794496399008@rustcraft.net",
-      "passwordHash": "59c95b4de7e5e583480178c0fc0436eb:f92a3c3206c0f9c93e2fd8f01d1c0ef44f6690367a49543528c51018cfc130084671a40e4d5fe3e53eeddee3d12ebd7ba70d8ecfaa02d9799ed0019738051795",
-      "role": "Developer",
-      "avatarUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=TestUser_1794496399008",
-      "bio": "",
-      "createdAt": "2026-11-12T15:13:19.063Z"
-    },
-    {
-      "id": "e7ed26b4-cadd-43a7-8a2c-e09d4d10186b",
-      "username": "TestUser_1794496422664",
-      "email": "test_1794496422664@rustcraft.net",
-      "passwordHash": "05bc0e42d96a18e4301119b53e02bc1c:bba10b9b056c7633f19327f312aff4fd4c9d85afa892eaeb117c337fd268ce74498a52fa682baceb426a6efe28354d1c43aa5876fbf193955f0cf554f86cdff4",
-      "role": "Developer",
-      "avatarUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=TestUser_1794496422664",
-      "bio": "",
-      "createdAt": "2026-11-12T15:13:42.721Z"
-    },
-    {
-      "id": "872a0d5a-eef5-42e6-9149-126c84bf1504",
-      "username": "TestUser_1794496463504",
-      "email": "test_1794496463504@rustcraft.net",
-      "passwordHash": "47f5f7bc1ce08398e8f1488375a601db:f8cc5676d361d5b27c0f84a9cb35ac88dac2b7a634a16eb2b59c182f7cc152db28d98e2ce0c09bd6c2fbd3ba2e61d21147a6a3bfbc5b2e4dff6c42e2343aa9b2",
-      "role": "Developer",
-      "avatarUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=TestUser_1794496463504",
-      "bio": "",
-      "createdAt": "2026-11-12T15:14:23.561Z"
+      "avatarUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=Developer",
+      "bio": "Verified Developer",
+      "createdAt": "2026-11-12T15:05:00.000Z"
     }
   ],
-  "mods": [
-    {
-      "id": "mod-glowing-amethysts",
-      "name": "Glowing Amethysts",
-      "slug": "glowing-amethysts",
-      "summary": "Illuminating crystals and decorative amethyst lanterns with dynamic light.",
-      "description": "Glowing Amethysts adds decorative light-emitting amethyst blocks, shards, and chandeliers to your Horizon world. Fully crafted in Rustcraft Content format (.hmod) with zero code overhead.",
-      "kind": "content",
-      "categories": [
-        "decoration",
-        "magic"
-      ],
-      "supportedGameVersions": [
-        "1.21.1",
-        "1.20.4"
-      ],
-      "authorId": "user-dev-01",
-      "downloads": 1424,
-      "likes": 89,
-      "iconUrl": "https://api.dicebear.com/7.x/shapes/svg?seed=GlowingAmethysts",
-      "screenshots": [],
-      "repositoryUrl": "https://github.com/rustcraft/sample-glowing-amethysts",
-      "license": "MIT",
-      "createdAt": "2026-11-12T15:05:48.151Z",
-      "updatedAt": "2026-11-12T15:14:26.601Z"
-    },
-    {
-      "id": "mod-kinetic-pipes",
-      "name": "Kinetic Item Pipes",
-      "slug": "kinetic-pipes",
-      "summary": "High-speed item and fluid transport tubes with visual routing.",
-      "description": "Fast, lag-free item transfer tubes modeled directly for the Horizon engine. Compatible with vanilla chests, barrels and hoppers.",
-      "kind": "content",
-      "categories": [
-        "technology",
-        "utility"
-      ],
-      "supportedGameVersions": [
-        "1.21.1"
-      ],
-      "authorId": "user-dev-01",
-      "downloads": 3254,
-      "likes": 215,
-      "iconUrl": "https://api.dicebear.com/7.x/shapes/svg?seed=KineticPipes",
-      "screenshots": [],
-      "repositoryUrl": "https://github.com/rustcraft/sample-kinetic-pipes",
-      "license": "MIT",
-      "createdAt": "2026-11-12T15:05:48.156Z",
-      "updatedAt": "2026-11-12T15:14:26.620Z"
-    },
-    {
-      "id": "mod-native-optimizer",
-      "name": "Horizon Engine Accelerator",
-      "slug": "engine-accelerator",
-      "summary": "Native SIMD math and memory allocator optimizations for peak FPS.",
-      "description": "Deep engine hooks leveraging Rust AVX2/NEON instructions to accelerate chunk meshing and entity tick loops.",
-      "kind": "native",
-      "categories": [
-        "optimization"
-      ],
-      "supportedGameVersions": [
-        "1.21.1"
-      ],
-      "authorId": "user-dev-01",
-      "downloads": 5804,
-      "likes": 412,
-      "iconUrl": "https://api.dicebear.com/7.x/shapes/svg?seed=Accelerator",
-      "screenshots": [],
-      "repositoryUrl": "https://github.com/rustcraft/engine-accelerator",
-      "license": "MIT",
-      "createdAt": "2026-11-12T15:05:48.161Z",
-      "updatedAt": "2026-11-12T15:14:26.635Z"
-    }
-  ],
-  "mod_versions": [
-    {
-      "id": "ver-amethyst-100",
-      "modId": "mod-glowing-amethysts",
-      "version": "1.0.0",
-      "changelog": "Initial release with glowing amethyst clusters and lanterns",
-      "gameVersion": "1.21.1",
-      "filename": "glowing_amethysts-1.0.0.hmod",
-      "filePath": "mods_mod-glowing-amethysts/glowing_amethysts-1.0.0.hmod",
-      "fileSize": 199,
-      "sha256": "91f7d7bd705b547dc0259379c0cf815b1a87243a01dbb6598349fe8b3573b06d",
-      "isSourceBuildRequired": false,
-      "dependencies": [],
-      "createdAt": "2026-11-12T15:05:48.155Z"
-    },
-    {
-      "id": "ver-pipes-120",
-      "modId": "mod-kinetic-pipes",
-      "version": "1.2.0",
-      "changelog": "Added sorting filters and high-speed extraction nodes",
-      "gameVersion": "1.21.1",
-      "filename": "kinetic_pipes-1.2.0.hmod",
-      "filePath": "mods_mod-kinetic-pipes/kinetic_pipes-1.2.0.hmod",
-      "fileSize": 189,
-      "sha256": "ba5b3a5d1b87e9dc1680a79ffc3356d9b66e4618b60a8e07e61a56086ec0c1ac",
-      "isSourceBuildRequired": false,
-      "dependencies": [],
-      "createdAt": "2026-11-12T15:05:48.160Z"
-    },
-    {
-      "id": "ver-optimizer-201",
-      "modId": "mod-native-optimizer",
-      "version": "2.0.1",
-      "changelog": "Multi-threaded lighting and memory reuse optimizations",
-      "gameVersion": "1.21.1",
-      "filename": "engine_accelerator-2.0.1.hnmod",
-      "filePath": "mods_mod-native-optimizer/engine_accelerator-2.0.1.hnmod",
-      "fileSize": 128,
-      "sha256": "32de786af3063cc4c4533f210bfb1f1033cfd9270fe4a1c60aeb0c25df5492d9",
-      "isSourceBuildRequired": false,
-      "dependencies": [],
-      "createdAt": "2026-11-12T15:05:48.166Z"
-    }
-  ],
-  "modpacks": [
-    {
-      "id": "pack-rustcraft-essentials",
-      "name": "Rustcraft Essentials",
-      "slug": "rustcraft-essentials",
-      "summary": "The ultimate starting modpack with enhanced visuals, item transport, and performance.",
-      "description": "Curated modpack designed for multiplayer servers and survival exploration. Includes Glowing Amethysts, Kinetic Pipes, and the Engine Accelerator pre-configured for maximum framerate.",
-      "gameVersion": "1.21.1",
-      "categories": [
-        "adventure",
-        "technology",
-        "optimization"
-      ],
-      "authorId": "user-admin-01",
-      "downloads": 980,
-      "likes": 120,
-      "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=RustcraftEssentials",
-      "screenshots": [],
-      "license": "MIT",
-      "createdAt": "2026-11-12T15:05:48.167Z"
-    }
-  ],
-  "modpack_versions": [
-    {
-      "id": "ver-pack-100",
-      "modpackId": "pack-rustcraft-essentials",
-      "version": "1.0.0",
-      "changelog": "Initial Essentials release with performance and decoration suite",
-      "gameVersion": "1.21.1",
-      "mods": [
-        {
-          "id": "glowing-amethysts",
-          "name": "Glowing Amethysts",
-          "version": "1.0.0",
-          "sha256": "91f7d7bd705b547dc0259379c0cf815b1a87243a01dbb6598349fe8b3573b06d",
-          "on": true
-        },
-        {
-          "id": "kinetic-pipes",
-          "name": "Kinetic Item Pipes",
-          "version": "1.2.0",
-          "sha256": "ba5b3a5d1b87e9dc1680a79ffc3356d9b66e4618b60a8e07e61a56086ec0c1ac",
-          "on": true
-        },
-        {
-          "id": "engine-accelerator",
-          "name": "Horizon Engine Accelerator",
-          "version": "2.0.1",
-          "sha256": "32de786af3063cc4c4533f210bfb1f1033cfd9270fe4a1c60aeb0c25df5492d9",
-          "on": true
-        }
-      ],
-      "manifestToml": "format = 1\nid = \"rustcraft_essentials\"\nname = \"Rustcraft Essentials\"\nversion = \"1.0.0\"\ndescription = \"Curated performance and survival modpack\"\ngame = \"1.21.1\"\nauthors = [\"RustcraftAdmin\"]\n\n[[mods]]\nid = \"glowing-amethysts\"\nversion = \"1.0.0\"\nsha256 = \"91f7d7bd705b547dc0259379c0cf815b1a87243a01dbb6598349fe8b3573b06d\"\non = true\n\n[[mods]]\nid = \"kinetic-pipes\"\nversion = \"1.2.0\"\nsha256 = \"ba5b3a5d1b87e9dc1680a79ffc3356d9b66e4618b60a8e07e61a56086ec0c1ac\"\non = true\n\n[[mods]]\nid = \"engine-accelerator\"\nversion = \"2.0.1\"\nsha256 = \"32de786af3063cc4c4533f210bfb1f1033cfd9270fe4a1c60aeb0c25df5492d9\"\non = true\n",
-      "filePath": "modpacks_pack-rustcraft-essentials/rustcraft_essentials-1.0.0.hpack.toml",
-      "fileSize": 603,
-      "sha256": "822e8b498dcafc9778f0784b4b080c3206ed4923c4de34abc6da2455b8ebac66",
-      "createdAt": "2026-11-12T15:05:48.170Z"
-    }
-  ],
+  "mods": [],
+  "mod_versions": [],
+  "modpacks": [],
+  "modpack_versions": [],
   "categories": [
-    {
-      "id": "technology",
-      "name": "Technology & Automation",
-      "icon": "Cpu"
-    },
-    {
-      "id": "magic",
-      "name": "Magic & Arcane",
-      "icon": "Wand2"
-    },
-    {
-      "id": "adventure",
-      "name": "Adventure & RPG",
-      "icon": "Compass"
-    },
-    {
-      "id": "worldgen",
-      "name": "World Generation & Biomes",
-      "icon": "Trees"
-    },
-    {
-      "id": "decoration",
-      "name": "Decoration & Building",
-      "icon": "Paintbrush"
-    },
-    {
-      "id": "optimization",
-      "name": "Performance & Optimization",
-      "icon": "Zap"
-    },
-    {
-      "id": "utility",
-      "name": "Utility & Tools",
-      "icon": "Wrench"
-    }
+    { "id": "technology", "name": "Technology & Automation", "icon": "Cpu" },
+    { "id": "magic", "name": "Magic & Arcane", "icon": "Wand2" },
+    { "id": "adventure", "name": "Adventure & RPG", "icon": "Compass" },
+    { "id": "worldgen", "name": "World Generation & Biomes", "icon": "Trees" },
+    { "id": "decoration", "name": "Decoration & Building", "icon": "Paintbrush" },
+    { "id": "optimization", "name": "Performance & Optimization", "icon": "Zap" },
+    { "id": "utility", "name": "Utility & Tools", "icon": "Wrench" }
   ],
   "reviews": [],
   "downloads": []

@@ -290,3 +290,4 @@ class InstanceManager {
 }
 
 module.exports = InstanceManager;
+

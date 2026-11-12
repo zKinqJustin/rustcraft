@@ -10,3 +10,4 @@ Rustcraft incorporates and builds upon ideas, architectures, and open source com
 
 ### 2. Minecraft / Mojang
 - Minecraft is a trademark of Mojang Synergies AB. Rustcraft is an independent community project and is not affiliated with Mojang or Microsoft.
+

@@ -1,0 +1,10 @@
+{
+  "theme": "dark",
+  "language": "en_US",
+  "defaultMemoryMinMb": 2048,
+  "defaultMemoryMaxMb": 4096,
+  "autoCheckUpdates": true,
+  "closeLauncherOnPlay": false,
+  "enableDiscordRpc": true,
+  "proxy": ""
+}

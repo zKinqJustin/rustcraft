@@ -53,3 +53,4 @@ class LauncherCore {
 }
 
 module.exports = LauncherCore;
+

@@ -119,7 +119,7 @@ capabilities = ["registries"]
   } finally {
     try {
       fs.rmSync(testDataDir, { recursive: true, force: true });
-    } catch (_) {}
+    } catch (_) { }
   }
 }
 
@@ -127,3 +127,4 @@ runLauncherTests().catch(e => {
   console.error('Launcher tests failed:', e);
   process.exit(1);
 });
+

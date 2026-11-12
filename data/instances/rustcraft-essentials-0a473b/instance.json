@@ -1,0 +1,15 @@
+{
+  "id": "rustcraft-essentials-0a473b",
+  "name": "Rustcraft Essentials",
+  "gameVersion": "1.21.1",
+  "icon": "Package",
+  "memoryMinMb": 2048,
+  "memoryMaxMb": 4096,
+  "jvmArgs": "-XX:+UseG1GC -Dsun.rmi.dgc.server.gcInterval=2147483646",
+  "gameArgs": "",
+  "playTimeMinutes": 15,
+  "lastPlayed": "2026-11-12T15:22:24.904Z",
+  "modpackId": "pack-rustcraft-essentials",
+  "createdAt": "2026-11-12T15:13:22.233Z",
+  "mods": []
+}

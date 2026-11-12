@@ -522,3 +522,4 @@ function setupSettingsListener() {
 function savePreferences() {
   alert('Preferences saved successfully!');
 }
+
