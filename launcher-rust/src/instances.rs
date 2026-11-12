@@ -342,8 +342,12 @@ fn list_in(game_home: &Path, data: &Path) -> Vec<Instance> {
         .into_iter()
         .map(|(id, name, kind, work, home)| {
             let meta = store.instances.get(&id).cloned().unwrap_or_default();
+            let mut resolved_name = meta.name.unwrap_or(name);
+            if resolved_name == "Horizon" {
+                resolved_name = "Rustcraft".to_string();
+            }
             Instance {
-                name: meta.name.unwrap_or(name),
+                name: resolved_name,
                 icon: meta.icon,
                 group: meta.group,
                 version: meta.version,

@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const fs = require('fs');
 const path = require('path');
 const db = require('../services/db');
 const { saveFile, getFilePath } = require('../services/storage');
@@ -183,11 +184,43 @@ async function downloadVersion(req, res) {
   }
 }
 
+async function deleteMod(req, res) {
+  try {
+    const { id } = req.params;
+    const mod = db.findOne('mods', m => m.id === id || m.slug === id);
+    if (!mod) {
+      return res.status(404).json({ error: 'Mod not found' });
+    }
+
+    if (req.user.role !== 'Admin' && mod.authorId !== req.user.id) {
+      return res.status(403).json({ error: 'Forbidden: You do not have permission to delete this mod' });
+    }
+
+    // Delete associated versions and storage files
+    const versions = db.find('mod_versions', v => v.modId === mod.id);
+    for (const v of versions) {
+      const fullPath = getFilePath(v.filePath);
+      if (fullPath && fs.existsSync(fullPath)) {
+        try { fs.unlinkSync(fullPath); } catch (e) {}
+      }
+    }
+    db.delete('mod_versions', v => v.modId === mod.id);
+
+    // Delete the mod record
+    db.delete('mods', m => m.id === mod.id);
+
+    res.json({ message: `Mod "${mod.name}" deleted successfully`, id: mod.id });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
 module.exports = {
   listMods,
   getMod,
   createMod,
   uploadVersion,
   downloadVersion,
+  deleteMod,
 };
 

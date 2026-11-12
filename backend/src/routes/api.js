@@ -31,6 +31,7 @@ router.get('/mods', modController.listMods);
 router.get('/mods/:id', modController.getMod);
 router.post('/mods', requireAuth, requireRole('Developer', 'Admin'), modController.createMod);
 router.post('/mods/:id/versions', requireAuth, upload.single('file'), modController.uploadVersion);
+router.delete('/mods/:id', requireAuth, modController.deleteMod);
 router.get('/mods/version/:versionId/download', modController.downloadVersion);
 
 // Modpacks
