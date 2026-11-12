@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const db = require('../services/db');
 
 /**
@@ -111,8 +113,80 @@ async function getStatus(req, res) {
   });
 }
 
+async function installModDirect(req, res) {
+  try {
+    const { type, id } = req.params;
+    const { version: requestedVersion } = req.body || {};
+
+    if (type !== 'mod') {
+      return res.status(400).json({ error: 'Direct local install currently supports mods' });
+    }
+
+    const mod = db.findOne('mods', m => m.id === id || m.slug === id);
+    if (!mod) return res.status(404).json({ error: 'Mod not found' });
+
+    const versions = db.find('mod_versions', v => v.modId === mod.id);
+    const version = requestedVersion 
+      ? versions.find(v => v.version === requestedVersion) 
+      : versions[versions.length - 1];
+
+    if (!version) return res.status(404).json({ error: 'No version available for this mod' });
+
+    const { getFilePath } = require('../services/storage');
+    const sourcePath = getFilePath(version.filePath);
+    if (!sourcePath || !fs.existsSync(sourcePath)) {
+      return res.status(404).json({ error: 'Mod file missing from storage' });
+    }
+
+    // Target game dirs in AppData
+    const appData = process.env.APPDATA || path.join(process.env.USERPROFILE, 'AppData', 'Roaming');
+    const targetDirs = [
+      path.join(appData, 'rustcraft'),
+      path.join(appData, 'horizon')
+    ];
+
+    const filename = version.filename || `${mod.slug}-${version.version}.${mod.kind === 'native' ? 'hnmod' : 'hmod'}`;
+
+    for (const baseDir of targetDirs) {
+      const modsFolder = path.join(baseDir, 'horizon-mods');
+      if (!fs.existsSync(modsFolder)) {
+        fs.mkdirSync(modsFolder, { recursive: true });
+      }
+
+      const destFile = path.join(modsFolder, filename);
+      fs.copyFileSync(sourcePath, destFile);
+
+      // Enable in horizon-mods.txt
+      const txtPath = path.join(baseDir, 'horizon-mods.txt');
+      let currentMods = '';
+      if (fs.existsSync(txtPath)) {
+        currentMods = fs.readFileSync(txtPath, 'utf8');
+      }
+      const lines = currentMods.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      if (!lines.includes(filename)) {
+        lines.push(filename);
+        fs.writeFileSync(txtPath, lines.join('\n') + '\n', 'utf8');
+      }
+    }
+
+    // Increment download counter
+    db.update('mods', m => m.id === mod.id, {
+      downloads: (mod.downloads || 0) + 1
+    });
+
+    res.json({
+      success: true,
+      message: `Mod "${mod.name}" (v${version.version}) wurde erfolgreich in Rustcraft installiert!`,
+      mod: { id: mod.id, name: mod.name, version: version.version, filename }
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
 module.exports = {
   resolveInstallPayload,
+  installModDirect,
   checkUpdates,
   getStatus
 };

@@ -42,6 +42,7 @@ router.post('/modpacks/:id/versions', requireAuth, upload.single('file'), modpac
 router.get('/modpacks/version/:versionId/download', modpackController.downloadModpack);
 
 // Launcher & Deep Linking
+router.post('/launcher/install-local/:type/:id', launcherController.installModDirect);
 router.get('/launcher/install/:type/:id', launcherController.resolveInstallPayload);
 router.get('/launcher/updates', launcherController.checkUpdates);
 
