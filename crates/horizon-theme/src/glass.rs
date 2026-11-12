@@ -7,11 +7,11 @@
 //! player's own accent comes out as it does on the website.
 
 /// The mockup's defaults: accent, how much white the plates take, and their blur in px.
-pub const ACCENT: u32 = 0x6b4bff;
+pub const ACCENT: u32 = 0xf97316;
 pub const TINT: f32 = 0.06;
 pub const BLUR: f32 = 24.;
 /// Behind the scene before it is drawn.
-pub const PAGE: u32 = 0x0a0919;
+pub const PAGE: u32 = 0x0b0d14;
 /// The dark text on a light accent, and on the white buttons.
 pub const ON_LIGHT: u32 = 0x100a1f;
 /// A running game or server, and a ready instance.
@@ -99,7 +99,7 @@ impl Glass {
     /// `--base: color-mix(in oklab, accent 10%, #14111d)`, and `.hzl-glass`'s background
     /// `color-mix(in srgb, white tint, color-mix(in oklab, base 22%, transparent))`.
     pub fn new(accent: u32, tint: f32, blur: f32) -> Glass {
-        let base = mix_oklab(accent, 0x14111d, 0.10);
+        let base = mix_oklab(accent, 0x111420, 0.10);
         // White at `tint` over the base at 22 %, mixed with premultiplied alpha as CSS does.
         let base_alpha = 0.22;
         let alpha = tint + (1. - tint) * base_alpha;

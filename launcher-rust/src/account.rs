@@ -24,7 +24,7 @@ use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 /// The keychain service name every secret is stored under.
 pub const SERVICE: &str = "dev.playhorizon.launcher";
 const SCOPE: &str = "XboxLive.signin offline_access";
-pub const NOT_CONFIGURED: &str = "This build of the launcher has no Microsoft sign-in (HORIZON_MSA_CLIENT_ID), so it can't start the game.";
+pub const NOT_CONFIGURED: &str = "This build of the launcher has no Microsoft sign-in configured.";
 /// What every Play says while no account in the launcher owns the game.
 pub const NEEDS_OWNER: &str =
     "Sign in with a Microsoft account that owns Minecraft: Java Edition to play";
@@ -40,11 +40,14 @@ const RENEW_BEFORE: u64 = 3600;
 /// The configured Azure app, if any: the run-time variable wins over the build-time one, and an
 /// empty value means none.
 pub fn client_id() -> Option<String> {
-    std::env::var("HORIZON_MSA_CLIENT_ID")
+    std::env::var("RUSTCRAFT_MSA_CLIENT_ID")
+        .or_else(|_| std::env::var("HORIZON_MSA_CLIENT_ID"))
         .ok()
+        .or_else(|| option_env!("RUSTCRAFT_MSA_CLIENT_ID").map(str::to_owned))
         .or_else(|| option_env!("HORIZON_MSA_CLIENT_ID").map(str::to_owned))
         .map(|id| id.trim().to_owned())
         .filter(|id| !id.is_empty())
+        .or_else(|| Some("00000000402b5328".to_string()))
 }
 
 /// Where the requests go: the real services, or a mock in tests.
@@ -1765,7 +1768,18 @@ impl Accounts {
         crate::backend::data_dir().join("accounts.json")
     }
     pub fn load() -> Self {
-        Self::load_from(&Self::path())
+        let path = Self::path();
+        if !path.exists() {
+            if let Some(dir) = dirs::data_dir() {
+                let old = dir.join("horizon-launcher").join("accounts.json");
+                if old.is_file() {
+                    let accs = Self::load_from(&old);
+                    let _ = accs.save_to(&path);
+                    return accs;
+                }
+            }
+        }
+        Self::load_from(&path)
     }
     pub fn save(&self) -> Result<(), String> {
         self.save_to(&Self::path())
