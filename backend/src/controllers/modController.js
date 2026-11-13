@@ -6,8 +6,12 @@ const { saveFile, getFilePath } = require('../services/storage');
 
 async function listMods(req, res) {
   try {
-    const { query, category, gameVersion, kind, sort } = req.query;
+    const { query, category, gameVersion, kind, sort, includePending } = req.query;
     let mods = db.find('mods', m => !m.deleted);
+
+    if (!includePending) {
+      mods = mods.filter(m => m.status === 'approved' || !m.status);
+    }
 
     if (query) {
       const q = query.toLowerCase();
@@ -91,6 +95,8 @@ async function createMod(req, res) {
       return res.status(409).json({ error: 'Mod with this slug already exists' });
     }
 
+    const status = (req.user && req.user.role === 'Admin') ? 'approved' : 'pending';
+
     const mod = db.insert('mods', {
       id: crypto.randomUUID(),
       name,
@@ -99,14 +105,16 @@ async function createMod(req, res) {
       description: description || summary,
       kind: kind === 'native' ? 'native' : 'content', // content (.hmod) or native (.hnmod)
       categories: Array.isArray(categories) ? categories : ['utility'],
-      supportedGameVersions: Array.isArray(supportedGameVersions) ? supportedGameVersions : ['1.21.1', '1.20.4'],
+      supportedGameVersions: Array.isArray(supportedGameVersions) ? supportedGameVersions : ['26.3'],
       authorId: req.user.id,
       downloads: 0,
       likes: 0,
       iconUrl: `https://api.dicebear.com/7.x/shapes/svg?seed=${encodeURIComponent(name)}`,
       screenshots: [],
       repositoryUrl: repositoryUrl || '',
-      license: 'MIT'
+      license: 'MIT',
+      status,
+      createdAt: new Date().toISOString()
     });
 
     res.status(201).json(mod);

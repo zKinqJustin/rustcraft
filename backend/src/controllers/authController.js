@@ -42,7 +42,8 @@ async function register(req, res) {
 
 async function login(req, res) {
   try {
-    const { login: identifier, password } = req.body;
+    const identifier = req.body.login || req.body.identifier || req.body.username;
+    const { password } = req.body;
     if (!identifier || !password) {
       return res.status(400).json({ error: 'Login identifier and password are required' });
     }

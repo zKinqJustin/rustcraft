@@ -1,0 +1,25 @@
+format = 1
+id = "rustcraft-explorer-essentials"
+name = "Rustcraft Explorer Essentials"
+version = "1.0.0"
+description = "Das offizielle All-in-One Utility Paket f�r Minecraft 26.3 mit F3, Jade und Zoom"
+game = "26.3"
+authors = ["RustcraftAdmin"]
+
+[[mods]]
+id = "betterf3"
+version = "1.0.0"
+name = "BetterF3"
+on = true
+
+[[mods]]
+id = "jade"
+version = "1.0.0"
+name = "Jade"
+on = true
+
+[[mods]]
+id = "zoom"
+version = "1.0.0"
+name = "Zoom"
+on = true

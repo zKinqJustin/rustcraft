@@ -1,0 +1,13 @@
+format = 1
+id = "community-shader-test"
+name = "Community Shader Test"
+version = "1.0.0"
+description = "A community submitted pack waiting for review"
+game = "26.3"
+authors = ["Developer"]
+
+[[mods]]
+id = "zoom"
+version = "1.0.0"
+name = "Zoom"
+on = true

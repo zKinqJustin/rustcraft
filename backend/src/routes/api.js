@@ -5,6 +5,7 @@ const authController = require('../controllers/authController');
 const modController = require('../controllers/modController');
 const modpackController = require('../controllers/modpackController');
 const launcherController = require('../controllers/launcherController');
+const adminController = require('../controllers/adminController');
 
 const router = express.Router();
 const upload = multer({ 
@@ -38,13 +39,20 @@ router.get('/mods/version/:versionId/download', modController.downloadVersion);
 router.get('/modpacks', modpackController.listModpacks);
 router.get('/modpacks/:id', modpackController.getModpack);
 router.post('/modpacks', requireAuth, modpackController.createModpack);
+router.post('/modpacks/publish', requireAuth, modpackController.publishStudioPack);
 router.post('/modpacks/:id/versions', requireAuth, upload.single('file'), modpackController.uploadModpackVersion);
 router.get('/modpacks/version/:versionId/download', modpackController.downloadModpack);
 
-// Launcher & Deep Linking
+// Launcher & Deep Linking & Client Detection
+router.get('/launcher/client-status', launcherController.getClientStatus);
+router.post('/launcher/start', launcherController.startLauncher);
 router.post('/launcher/install-local/:type/:id', launcherController.installModDirect);
 router.get('/launcher/install/:type/:id', launcherController.resolveInstallPayload);
 router.get('/launcher/updates', launcherController.checkUpdates);
 
-module.exports = router;
+// Admin Moderation & Dashboard
+router.get('/admin/submissions', requireAuth, requireRole('Admin'), adminController.getSubmissions);
+router.post('/admin/review/:type/:id', requireAuth, requireRole('Admin'), adminController.reviewSubmission);
+router.delete('/admin/items/:type/:id', requireAuth, requireRole('Admin'), adminController.deleteItem);
 
+module.exports = router;
