@@ -68,10 +68,22 @@
         <button onclick="navigateTo('upload')" id="tab-upload" class="nav-tab px-4 py-2 rounded-xl text-xs font-medium transition-all text-slate-300 hover:text-white hover:bg-slate-800/60">
           Upload
         </button>
+        <button onclick="navigateTo('admin')" id="tab-admin" class="hidden nav-tab px-3.5 py-2 rounded-xl text-xs font-semibold transition-all text-red-400 hover:text-red-300 hover:bg-red-500/10 flex items-center gap-1.5 border border-red-500/20">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-red-400"></i>
+          Admin
+          <span id="admin-pending-badge" class="hidden px-1.5 py-0.2 bg-red-500 text-white font-bold text-[10px] rounded-full">0</span>
+        </button>
       </nav>
 
       <!-- Account & Launcher Link -->
       <div class="flex items-center gap-3">
+        <!-- Live Client Detection Indicator -->
+        <div id="client-status-pill" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium border border-slate-800 bg-slate-900/80 shadow-sm">
+          <span id="client-status-dot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+          <span id="client-status-text" class="text-slate-300">Suche Client...</span>
+          <button id="client-start-btn" onclick="startLauncherFromWeb()" class="hidden ml-1 px-2.5 py-0.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-white font-bold text-[10px] rounded-md shadow transition-all">Starten</button>
+        </div>
+
         <a href="http://localhost:5000" target="_blank" class="hidden lg:flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl border border-slate-700 transition-all shadow">
           <i data-lucide="play" class="w-3.5 h-3.5 text-emerald-400 fill-emerald-400"></i>
           Open Launcher
@@ -230,23 +242,27 @@
               <div>
                 <label class="text-xs font-semibold text-slate-300">Target Horizon Version</label>
                 <select id="studio-pack-version" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-100 mt-1 focus:outline-none focus:border-orange-500">
+                  <option value="26.3" selected>Minecraft 26.3 (Rustcraft Native)</option>
                   <option value="1.21.1">Horizon 1.21.1</option>
                   <option value="1.20.4">Horizon 1.20.4</option>
                 </select>
               </div>
               <div class="md:col-span-2">
                 <label class="text-xs font-semibold text-slate-300">Description / Summary</label>
-                <input type="text" id="studio-pack-desc" value="A handcrafted modpack with high-performance shaders and automated item transport." class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-100 mt-1 focus:outline-none focus:border-orange-500">
+                <input type="text" id="studio-pack-desc" value="Handcrafted Rustcraft pack with optimized utilities and shaders." class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-100 mt-1 focus:outline-none focus:border-orange-500">
               </div>
             </div>
           </div>
 
           <!-- Mod Selection Picker -->
           <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 space-y-4">
-            <h3 class="text-base font-bold text-white flex items-center gap-2">
-              <i data-lucide="plus-circle" class="w-4 h-4 text-amber-400"></i>
-              Add Mods from Catalog
-            </h3>
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <i data-lucide="plus-circle" class="w-4 h-4 text-amber-400"></i>
+                Mods auswählen & zusammenstellen
+              </h3>
+              <span id="studio-mod-count" class="text-xs text-orange-400 font-bold bg-orange-500/10 px-2.5 py-1 rounded-full border border-orange-500/20">0 Mods gewählt</span>
+            </div>
             <div id="studio-available-mods" class="space-y-2 max-h-80 overflow-y-auto pr-2">
               <!-- Checkboxes of catalog mods -->
             </div>
@@ -262,12 +278,16 @@
             </h3>
             <pre id="studio-toml-preview" class="bg-black/80 border border-slate-800 p-4 rounded-xl text-[11px] font-mono text-emerald-400 max-h-72 overflow-y-auto"></pre>
             
-            <div class="space-y-2 pt-2">
-              <button onclick="installStudioPackDirectly()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-white font-bold text-xs rounded-xl shadow-lg glow-green flex items-center justify-center gap-2">
-                <i data-lucide="download-cloud" class="w-4 h-4"></i>
-                1-Click Install into Launcher
+            <div class="space-y-2.5 pt-2">
+              <button onclick="publishStudioPack()" class="w-full py-3 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-white font-bold text-xs rounded-xl shadow-lg glow-orange flex items-center justify-center gap-2 transition-all">
+                <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+                Modpack auf Plattform veröffentlichen
               </button>
-              <button onclick="exportStudioPackToml()" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs rounded-xl border border-slate-700 flex items-center justify-center gap-2">
+              <button onclick="installStudioPackDirectly()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-white font-bold text-xs rounded-xl shadow-lg glow-green flex items-center justify-center gap-2 transition-all">
+                <i data-lucide="download-cloud" class="w-4 h-4"></i>
+                1-Click Install in Rustcraft Launcher
+              </button>
+              <button onclick="exportStudioPackToml()" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs rounded-xl border border-slate-700 flex items-center justify-center gap-2 transition-all">
                 <i data-lucide="download" class="w-4 h-4"></i>
                 Download .hpack.toml
               </button>
@@ -347,6 +367,95 @@
           <i data-lucide="upload" class="w-4 h-4"></i>
           <span>Publish Mod Project & Upload File</span>
         </button>
+      </div>
+    </div>
+
+    <!-- View: Admin Moderation Dashboard (No Dummy Content) -->
+    <div id="view-admin" class="hidden space-y-8">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-wide uppercase bg-red-500/20 text-red-400 border border-red-500/30">Admin Zone</span>
+            <span class="text-xs text-slate-400">Echtzeit-Moderation & Freigaben</span>
+          </div>
+          <h2 class="text-3xl font-black text-white mt-1 flex items-center gap-3">
+            <i data-lucide="shield-check" class="w-8 h-8 text-red-500"></i>
+            Admin Moderation Dashboard
+          </h2>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="loadAdminDashboard()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl border border-slate-700 flex items-center gap-2 transition-all">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+            Aktualisieren
+          </button>
+        </div>
+      </div>
+
+      <!-- Real Live Stats KPI Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-slate-900/90 border border-slate-800 p-5 rounded-2xl">
+          <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
+            <span>Ausstehende Prüfungen</span>
+            <i data-lucide="clock" class="w-4 h-4 text-amber-400"></i>
+          </div>
+          <div id="admin-stat-pending" class="text-3xl font-black text-amber-400 mt-2">0</div>
+          <div class="text-[11px] text-slate-500 mt-1">Warten auf Freigabe</div>
+        </div>
+
+        <div class="bg-slate-900/90 border border-slate-800 p-5 rounded-2xl">
+          <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
+            <span>Freigegebene Mods</span>
+            <i data-lucide="package" class="w-4 h-4 text-emerald-400"></i>
+          </div>
+          <div id="admin-stat-mods" class="text-3xl font-black text-white mt-2">0</div>
+          <div class="text-[11px] text-slate-500 mt-1">Im öffentlichen Katalog</div>
+        </div>
+
+        <div class="bg-slate-900/90 border border-slate-800 p-5 rounded-2xl">
+          <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
+            <span>Freigegebene Modpacks</span>
+            <i data-lucide="layers" class="w-4 h-4 text-orange-400"></i>
+          </div>
+          <div id="admin-stat-packs" class="text-3xl font-black text-white mt-2">0</div>
+          <div class="text-[11px] text-slate-500 mt-1">Im Pack-Verzeichnis</div>
+        </div>
+
+        <div class="bg-slate-900/90 border border-slate-800 p-5 rounded-2xl">
+          <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
+            <span>Rustcraft Client</span>
+            <i data-lucide="activity" class="w-4 h-4 text-sky-400"></i>
+          </div>
+          <div id="admin-stat-launcher" class="text-sm font-bold text-slate-200 mt-2 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-slate-500"></span> Prüfe...
+          </div>
+          <div class="text-[11px] text-slate-500 mt-1">Minecraft 26.3 Native</div>
+        </div>
+      </div>
+
+      <!-- Tab Navigation -->
+      <div class="flex items-center gap-2 border-b border-slate-800 pb-3">
+        <button onclick="switchAdminTab('pending')" id="admin-tab-btn-pending" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center gap-2 transition-all">
+          <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i>
+          Ausstehende Freigaben (<span id="admin-tab-pending-count">0</span>)
+        </button>
+        <button onclick="switchAdminTab('approved')" id="admin-tab-btn-approved" class="px-4 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800/60 flex items-center gap-2 transition-all">
+          <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
+          Katalog-Inhalte verwalten
+        </button>
+      </div>
+
+      <!-- Tab 1: Pending Queue -->
+      <div id="admin-tab-pending" class="space-y-4">
+        <div id="admin-pending-container" class="space-y-3">
+          <!-- Pending items inserted dynamically -->
+        </div>
+      </div>
+
+      <!-- Tab 2: Approved Management -->
+      <div id="admin-tab-approved" class="hidden space-y-4">
+        <div id="admin-approved-container" class="space-y-3">
+          <!-- Approved items inserted dynamically -->
+        </div>
       </div>
     </div>
 

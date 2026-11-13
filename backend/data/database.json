@@ -44,7 +44,100 @@
       "repositoryUrl": "",
       "license": "MIT",
       "createdAt": "2026-11-12T17:17:47.155Z",
-      "updatedAt": "2026-11-12T17:27:49.582Z"
+      "updatedAt": "2026-11-12T17:27:49.582Z",
+      "status": "approved"
+    },
+    {
+      "id": "4c3f87ce-3a80-4657-bb17-0491000b30c1",
+      "name": "Jade",
+      "slug": "jade",
+      "summary": "Jade",
+      "description": "Jade",
+      "kind": "native",
+      "categories": [
+        "utility"
+      ],
+      "supportedGameVersions": [
+        "26.3"
+      ],
+      "authorId": "user-admin-01",
+      "downloads": 0,
+      "likes": 0,
+      "iconUrl": "https://api.dicebear.com/7.x/shapes/svg?seed=Jade",
+      "screenshots": [],
+      "repositoryUrl": "",
+      "license": "MIT",
+      "createdAt": "2026-11-12T20:50:39.216Z",
+      "status": "approved"
+    },
+    {
+      "id": "afa6b004-96c2-48a4-89ce-0804ef4ca1f4",
+      "name": "JEI",
+      "slug": "jei",
+      "summary": "JEI",
+      "description": "JEI",
+      "kind": "native",
+      "categories": [
+        "utility"
+      ],
+      "supportedGameVersions": [
+        "26.3"
+      ],
+      "authorId": "user-admin-01",
+      "downloads": 0,
+      "likes": 0,
+      "iconUrl": "https://api.dicebear.com/7.x/shapes/svg?seed=JEI",
+      "screenshots": [],
+      "repositoryUrl": "",
+      "license": "MIT",
+      "createdAt": "2026-11-12T20:50:57.416Z",
+      "status": "approved"
+    },
+    {
+      "id": "698f4f5a-aa7d-4773-b968-7687a10ccb4d",
+      "name": "Mod Menu",
+      "slug": "mod-menu",
+      "summary": "Mod Menu",
+      "description": "Mod Menu",
+      "kind": "native",
+      "categories": [
+        "utility"
+      ],
+      "supportedGameVersions": [
+        "26.3"
+      ],
+      "authorId": "user-admin-01",
+      "downloads": 0,
+      "likes": 0,
+      "iconUrl": "https://api.dicebear.com/7.x/shapes/svg?seed=Mod%20Menu",
+      "screenshots": [],
+      "repositoryUrl": "",
+      "license": "MIT",
+      "createdAt": "2026-11-12T20:51:20.687Z",
+      "status": "approved"
+    },
+    {
+      "id": "52cd897d-0b8c-4d99-9d72-a04445b5a09b",
+      "name": "Zoom",
+      "slug": "zoom",
+      "summary": "Zoom",
+      "description": "Zoom",
+      "kind": "native",
+      "categories": [
+        "utility"
+      ],
+      "supportedGameVersions": [
+        "26.3"
+      ],
+      "authorId": "user-admin-01",
+      "downloads": 0,
+      "likes": 0,
+      "iconUrl": "https://api.dicebear.com/7.x/shapes/svg?seed=Zoom",
+      "screenshots": [],
+      "repositoryUrl": "",
+      "license": "MIT",
+      "createdAt": "2026-11-12T20:51:35.320Z",
+      "status": "approved"
     }
   ],
   "mod_versions": [
@@ -61,10 +154,120 @@
       "isSourceBuildRequired": false,
       "dependencies": [],
       "createdAt": "2026-11-12T17:17:47.198Z"
+    },
+    {
+      "id": "ac716967-07c9-417e-82d9-b1985ab35103",
+      "modId": "4c3f87ce-3a80-4657-bb17-0491000b30c1",
+      "version": "1.0.0",
+      "changelog": "Initial release",
+      "gameVersion": "26.3",
+      "filename": "jade-26.3.8.hnmod",
+      "filePath": "mods_4c3f87ce-3a80-4657-bb17-0491000b30c1/jade-26.3.8.hnmod",
+      "fileSize": 222986,
+      "sha256": "eeb74fbcfbe75e568ecebdc82c8091c482e4f929dcb1f4d7390052d2ef8c5da8",
+      "isSourceBuildRequired": false,
+      "dependencies": [],
+      "createdAt": "2026-11-12T20:50:39.233Z"
+    },
+    {
+      "id": "772899ab-2409-4a32-ad5c-284b816fd74c",
+      "modId": "afa6b004-96c2-48a4-89ce-0804ef4ca1f4",
+      "version": "1.0.0",
+      "changelog": "Initial release",
+      "gameVersion": "26.3",
+      "filename": "jei-0.2.1.hnmod",
+      "filePath": "mods_afa6b004-96c2-48a4-89ce-0804ef4ca1f4/jei-0.2.1.hnmod",
+      "fileSize": 31495,
+      "sha256": "d0a840069ff9fb877021829584df72441928a9283feb27df30d244837bc7f2af",
+      "isSourceBuildRequired": false,
+      "dependencies": [],
+      "createdAt": "2026-11-12T20:50:57.723Z"
+    },
+    {
+      "id": "bb49af8d-f93d-48b7-b37c-03b3f81ca8c3",
+      "modId": "698f4f5a-aa7d-4773-b968-7687a10ccb4d",
+      "version": "1.0.0",
+      "changelog": "Initial release",
+      "gameVersion": "26.3",
+      "filename": "mod_menu-0.3.5.hnmod",
+      "filePath": "mods_698f4f5a-aa7d-4773-b968-7687a10ccb4d/mod_menu-0.3.5.hnmod",
+      "fileSize": 25074,
+      "sha256": "5fef518e6ce7417944ab2621711be013cf7e25fdd6d3b25922876e78f090bfa3",
+      "isSourceBuildRequired": false,
+      "dependencies": [],
+      "createdAt": "2026-11-12T20:51:20.996Z"
+    },
+    {
+      "id": "9ddf2b8a-39c2-4d7f-a74a-9dc0b2586f55",
+      "modId": "52cd897d-0b8c-4d99-9d72-a04445b5a09b",
+      "version": "1.0.0",
+      "changelog": "Initial release",
+      "gameVersion": "26.3",
+      "filename": "zoom-2.0.0.hnmod",
+      "filePath": "mods_52cd897d-0b8c-4d99-9d72-a04445b5a09b/zoom-2.0.0.hnmod",
+      "fileSize": 5886,
+      "sha256": "49fa2d7d635225c53304fbf1477606c0677eb23d94dac75b730f6c3ba065f127",
+      "isSourceBuildRequired": false,
+      "dependencies": [],
+      "createdAt": "2026-11-12T20:51:35.632Z"
     }
   ],
-  "modpacks": [],
-  "modpack_versions": [],
+  "modpacks": [
+    {
+      "id": "90f7ad30-3af7-457b-bde5-9d9b21af1548",
+      "name": "Rustcraft Explorer Essentials",
+      "slug": "rustcraft-explorer-essentials",
+      "summary": "Das offizielle All-in-One Utility Paket f�r Minecraft 26.3 mit F3, Jade und Zoom",
+      "description": "Das offizielle All-in-One Utility Paket f�r Minecraft 26.3 mit F3, Jade und Zoom",
+      "gameVersion": "26.3",
+      "categories": [
+        "adventure"
+      ],
+      "authorId": "user-admin-01",
+      "downloads": 1,
+      "likes": 0,
+      "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=Rustcraft%20Explorer%20Essentials",
+      "screenshots": [],
+      "license": "MIT",
+      "status": "approved",
+      "createdAt": "2026-11-13T05:43:16.897Z",
+      "updatedAt": "2026-11-13T05:43:22.553Z"
+    }
+  ],
+  "modpack_versions": [
+    {
+      "id": "d187db7f-7e0a-4a1a-b244-813173250d1c",
+      "modpackId": "90f7ad30-3af7-457b-bde5-9d9b21af1548",
+      "version": "1.0.0",
+      "changelog": "Published via Rustcraft Modpack Studio",
+      "gameVersion": "26.3",
+      "mods": [
+        {
+          "name": "BetterF3",
+          "id": "betterf3",
+          "slug": "betterf3",
+          "version": "1.0.0"
+        },
+        {
+          "name": "Jade",
+          "id": "jade",
+          "slug": "jade",
+          "version": "1.0.0"
+        },
+        {
+          "name": "Zoom",
+          "id": "zoom",
+          "slug": "zoom",
+          "version": "1.0.0"
+        }
+      ],
+      "manifestToml": "format = 1\nid = \"rustcraft-explorer-essentials\"\nname = \"Rustcraft Explorer Essentials\"\nversion = \"1.0.0\"\ndescription = \"Das offizielle All-in-One Utility Paket f�r Minecraft 26.3 mit F3, Jade und Zoom\"\ngame = \"26.3\"\nauthors = [\"RustcraftAdmin\"]\n\n[[mods]]\nid = \"betterf3\"\nversion = \"1.0.0\"\nname = \"BetterF3\"\non = true\n\n[[mods]]\nid = \"jade\"\nversion = \"1.0.0\"\nname = \"Jade\"\non = true\n\n[[mods]]\nid = \"zoom\"\nversion = \"1.0.0\"\nname = \"Zoom\"\non = true\n",
+      "filePath": "modpacks_90f7ad30-3af7-457b-bde5-9d9b21af1548/rustcraft-explorer-essentials-1.0.0.hpack.toml",
+      "fileSize": 447,
+      "sha256": "750be1ed1078aeb81d8895983c07f3b9f09f907f1268e9e313d54ccad5c68ef9",
+      "createdAt": "2026-11-13T05:43:16.901Z"
+    }
+  ],
   "categories": [
     {
       "id": "technology",

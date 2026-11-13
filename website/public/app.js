@@ -6,12 +6,16 @@ let allModpacks = [];
 let currentUser = null;
 let currentAuthMode = 'login';
 let selectedStudioMods = new Set();
+let currentAdminTab = 'pending';
+let adminData = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
   if (window.lucide) window.lucide.createIcons();
   checkStoredAuth();
   await loadData();
   setupStudio();
+  checkLauncherStatus();
+  setInterval(checkLauncherStatus, 4000);
 
   // Setup drag-and-drop for upload dropzone
   const dropzone = document.getElementById('dropzone-file');
@@ -42,23 +46,75 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
+// Client Detection
+async function checkLauncherStatus() {
+  try {
+    const res = await fetch(`${API_BASE}/launcher/client-status`);
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+
+    const dot = document.getElementById('client-status-dot');
+    const text = document.getElementById('client-status-text');
+    const startBtn = document.getElementById('client-start-btn');
+    const adminStat = document.getElementById('admin-stat-launcher');
+
+    if (data.running) {
+      if (dot) dot.className = 'w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]';
+      if (text) text.innerHTML = `<span class="text-emerald-400 font-bold">Rustcraft aktiv</span> <span class="text-slate-400 text-[10px] hidden sm:inline">(PID ${data.pid})</span>`;
+      if (startBtn) startBtn.classList.add('hidden');
+      if (adminStat) adminStat.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400"></span> <span class="text-emerald-400">Aktiv (PID ${data.pid} · 26.3)</span>`;
+    } else {
+      if (dot) dot.className = 'w-2 h-2 rounded-full bg-slate-500';
+      if (text) text.textContent = 'Client offline';
+      if (startBtn) startBtn.classList.remove('hidden');
+      if (adminStat) adminStat.innerHTML = `<span class="w-2 h-2 rounded-full bg-slate-500"></span> <span class="text-slate-400">Offline</span>`;
+    }
+  } catch (e) {
+    const text = document.getElementById('client-status-text');
+    if (text) text.textContent = 'Backend offline';
+  }
+}
+
+async function startLauncherFromWeb() {
+  const btn = document.getElementById('client-start-btn');
+  if (btn) btn.textContent = 'Startet...';
+  try {
+    const res = await fetch(`${API_BASE}/launcher/start`, { method: 'POST' });
+    const data = await res.json();
+    setTimeout(checkLauncherStatus, 1500);
+  } catch (e) {
+    alert('Fehler beim Starten des Launchers: ' + e.message);
+  } finally {
+    if (btn) btn.textContent = 'Starten';
+  }
+}
+
 // Navigation
 function navigateTo(viewId) {
-  const views = ['home', 'mods', 'modpacks', 'studio', 'upload'];
+  const views = ['home', 'mods', 'modpacks', 'studio', 'upload', 'admin'];
   views.forEach(v => {
     const el = document.getElementById(`view-${v}`);
     const tab = document.getElementById(`tab-${v}`);
     if (el) el.classList.toggle('hidden', v !== viewId);
     if (tab) {
       if (v === viewId) {
-        tab.className = "nav-tab px-4 py-2 rounded-xl text-xs font-bold transition-all text-orange-400 bg-orange-500/10 border border-orange-500/20";
+        if (v === 'admin') {
+          tab.className = "nav-tab px-3.5 py-2 rounded-xl text-xs font-bold transition-all text-red-400 bg-red-500/20 border border-red-500/40 flex items-center gap-1.5";
+        } else {
+          tab.className = "nav-tab px-4 py-2 rounded-xl text-xs font-bold transition-all text-orange-400 bg-orange-500/10 border border-orange-500/20";
+        }
       } else {
-        tab.className = "nav-tab px-4 py-2 rounded-xl text-xs font-medium transition-all text-slate-300 hover:text-white hover:bg-slate-800/60";
+        if (v === 'admin') {
+          tab.className = "nav-tab px-3.5 py-2 rounded-xl text-xs font-semibold transition-all text-red-400 hover:text-red-300 hover:bg-red-500/10 flex items-center gap-1.5 border border-red-500/20";
+        } else {
+          tab.className = "nav-tab px-4 py-2 rounded-xl text-xs font-medium transition-all text-slate-300 hover:text-white hover:bg-slate-800/60";
+        }
       }
     }
   });
 
   if (viewId === 'studio') updateStudioPreview();
+  if (viewId === 'admin') loadAdminDashboard();
   if (window.lucide) window.lucide.createIcons();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -76,8 +132,10 @@ async function loadData() {
     allModpacks = packsRes.modpacks || [];
 
     if (statusRes.stats) {
-      document.getElementById('stat-mods').textContent = `${statusRes.stats.mods}`;
-      document.getElementById('stat-downloads').textContent = `${statusRes.stats.modpacks}`;
+      const modEl = document.getElementById('stat-mods');
+      const packEl = document.getElementById('stat-downloads');
+      if (modEl) modEl.textContent = `${statusRes.stats.mods}`;
+      if (packEl) packEl.textContent = `${statusRes.stats.modpacks}`;
     }
 
     renderFeaturedHome();
@@ -128,10 +186,10 @@ function renderModsGrid(mods) {
     grid.innerHTML = `
       <div class="col-span-3 p-12 bg-slate-900/40 border border-slate-800 rounded-3xl text-center space-y-3">
         <i data-lucide="puzzle" class="w-12 h-12 text-slate-600 mx-auto"></i>
-        <h3 class="text-base font-bold text-slate-200">No Mods Published Yet</h3>
-        <p class="text-xs text-slate-400 max-w-sm mx-auto">This repository is clean and ready. Upload your own .hmod or .hnmod projects to make them available here.</p>
+        <h3 class="text-base font-bold text-slate-200">Keine Mods gefunden</h3>
+        <p class="text-xs text-slate-400 max-w-sm mx-auto">Lade neue Mods hoch oder erstelle ein Modpack im Studio.</p>
         <button onclick="navigateTo('upload')" class="px-5 py-2 bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs rounded-xl shadow glow-orange">
-          Upload New Mod
+          Neue Mod hochladen
         </button>
       </div>
     `;
@@ -155,10 +213,10 @@ function renderModpacksGrid(packs) {
     grid.innerHTML = `
       <div class="col-span-2 p-12 bg-slate-900/40 border border-slate-800 rounded-3xl text-center space-y-3">
         <i data-lucide="boxes" class="w-12 h-12 text-slate-600 mx-auto"></i>
-        <h3 class="text-base font-bold text-slate-200">No Modpacks Available</h3>
-        <p class="text-xs text-slate-400 max-w-sm mx-auto">Create a customized profile using our visual Modpack Studio.</p>
+        <h3 class="text-base font-bold text-slate-200">Noch keine Modpacks veröffentlicht</h3>
+        <p class="text-xs text-slate-400 max-w-sm mx-auto">Erstelle jetzt dein eigenes Paket im visuellen Modpack Studio und teile es mit 1-Click Install.</p>
         <button onclick="navigateTo('studio')" class="px-5 py-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-white font-bold text-xs rounded-xl shadow glow-orange">
-          Launch Modpack Studio
+          Modpack Studio öffnen
         </button>
       </div>
     `;
@@ -187,18 +245,18 @@ function createCardElement(item) {
             ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' 
             : (item.kind === 'native' ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' : 'bg-orange-500/20 text-orange-400 border border-orange-500/30')
         }">
-          ${isPack ? 'Modpack' : (item.kind === 'native' ? 'Native Mod' : 'Content HMOD')}
+          ${isPack ? 'Modpack' : (item.kind === 'native' ? 'Native Mod (.hnmod)' : 'Content HMOD')}
         </span>
       </div>
       <h3 class="font-bold text-lg text-white mt-4 group-hover:text-orange-400 transition-colors">${item.name}</h3>
-      <p class="text-xs text-slate-400 mt-1.5 line-clamp-2 leading-relaxed">${item.summary}</p>
+      <p class="text-xs text-slate-400 mt-1.5 line-clamp-2 leading-relaxed">${item.summary || item.description || ''}</p>
     </div>
 
     <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
       <span class="text-xs font-mono font-bold text-slate-400">${item.downloads || 0} downloads</span>
       <div class="flex items-center gap-2">
         ${currentUser && (currentUser.role === 'Admin' || (currentUser && currentUser.id === item.authorId)) ? `
-          <button onclick="event.stopPropagation(); deleteModById('${item.id}', '${item.name.replace(/'/g, "\\'")}')" title="Delete Mod" class="p-1.5 hover:bg-red-500/20 text-slate-500 hover:text-red-400 rounded-lg transition-colors border border-transparent hover:border-red-500/30">
+          <button onclick="event.stopPropagation(); deleteItemDirectly('${isPack ? 'modpack' : 'mod'}', '${item.id}', '${item.name.replace(/'/g, "\\'")}')" title="Löschen" class="p-1.5 hover:bg-red-500/20 text-slate-500 hover:text-red-400 rounded-lg transition-colors border border-transparent hover:border-red-500/30">
             <i data-lucide="trash-2" class="w-4 h-4"></i>
           </button>
         ` : ''}
@@ -206,7 +264,7 @@ function createCardElement(item) {
           Details
         </button>
         <button onclick="triggerInstall('${item.slug}', ${isPack})" class="px-3.5 py-1.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-white font-bold text-xs rounded-lg shadow glow-orange">
-          Install
+          ${isPack ? 'Install Pack' : 'Install'}
         </button>
       </div>
     </div>
@@ -223,7 +281,7 @@ function applyModFilters() {
   const filtered = allMods.filter(m => {
     const matchCat = !cat || (m.categories && m.categories.includes(cat));
     const matchKind = !kind || m.kind === kind;
-    const matchQ = !q || m.name.toLowerCase().includes(q) || m.summary.toLowerCase().includes(q);
+    const matchQ = !q || m.name.toLowerCase().includes(q) || (m.summary && m.summary.toLowerCase().includes(q));
     return matchCat && matchKind && matchQ;
   });
 
@@ -233,97 +291,57 @@ function applyModFilters() {
 // 1-Click Install Handler
 async function triggerInstall(slug, isModpack) {
   try {
-    const res = await fetch(`${API_BASE}/launcher/install-local/mod/${slug}`, {
+    const type = isModpack ? 'modpack' : 'mod';
+    const res = await fetch(`${API_BASE}/launcher/install-local/${type}/${slug}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' }
     });
     const data = await res.json();
-    if (res.ok && data.success) {
-      alert(`✅ ${data.message}\n\nDie Mod ist jetzt in Rustcraft einsatzbereit.`);
-      await loadData();
-      return;
+    if (res.ok) {
+      alert(`✅ ${data.message}`);
+    } else {
+      alert(`⚠️ ${data.error || 'Fehler bei der Installation'}`);
     }
-  } catch (e) {
-    console.error('Local direct install error:', e);
+  } catch (err) {
+    alert('Fehler bei der Verbindung zum lokalen Rustcraft-Backend: ' + err.message);
   }
-
-  // Fallback: direct download link
-  const mod = allMods.find(m => m.slug === slug);
-  if (mod && mod.latestVersionId) {
-    window.location.href = `${API_BASE}/mods/version/${mod.latestVersionId}/download`;
-  } else {
-    alert(`Mod "${slug}" heruntergeladen.`);
-  }
-}
-
-let currentDetailItem = null;
-
-// Delete Mod (Admin / Author)
-async function deleteModById(id, name) {
-  if (!confirm(`Are you sure you want to permanently delete "${name}"? This will remove all files and versions from the platform.`)) {
-    return;
-  }
-  const token = localStorage.getItem('rustcraft_jwt');
-  if (!token) {
-    alert('Please log in with an Admin or Developer account to delete mods.');
-    openAuthModal('login');
-    return;
-  }
-
-  try {
-    const res = await fetch(`${API_BASE}/mods/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error);
-
-    alert(`Mod "${name}" was deleted successfully.`);
-    closeDetailModal();
-    await loadData();
-    navigateTo('mods');
-  } catch (e) {
-    alert(`Failed to delete mod: ${e.message}`);
-  }
-}
-
-function deleteCurrentMod() {
-  if (!currentDetailItem) return;
-  deleteModById(currentDetailItem.id, currentDetailItem.name);
 }
 
 // Detail Modal
+let currentDetailItem = null;
+let currentDetailIsPack = false;
+
 async function openDetail(slug, isModpack) {
-  const item = isModpack ? allModpacks.find(p => p.slug === slug) : allMods.find(m => m.slug === slug);
-  if (!item) return;
+  try {
+    const endpoint = isModpack ? `/modpacks/${slug}` : `/mods/${slug}`;
+    const res = await fetch(`${API_BASE}${endpoint}`);
+    const item = await res.json();
+    currentDetailItem = item;
+    currentDetailIsPack = isModpack;
 
-  currentDetailItem = item;
-  document.getElementById('modal-title').textContent = item.name;
-  document.getElementById('modal-icon').src = item.iconUrl || `https://api.dicebear.com/7.x/shapes/svg?seed=${item.slug}`;
-  document.getElementById('modal-desc').textContent = item.description || item.summary;
-  document.getElementById('modal-author').textContent = `Created by: ${item.author ? item.author.username : 'Rustcraft Community'}`;
-  document.getElementById('modal-badge').textContent = isModpack ? 'MODPACK' : (item.kind === 'native' ? '.HNMOD NATIVE' : '.HMOD CONTENT');
-  document.getElementById('modal-sha').textContent = item.latestVersion ? `Version ${item.latestVersion} • Ready` : 'Verified cryptographic archive';
+    document.getElementById('modal-title').textContent = item.name;
+    document.getElementById('modal-type-badge').textContent = isModpack ? 'Modpack' : (item.kind === 'native' ? 'Native Mod' : 'Content HMOD');
+    document.getElementById('modal-summary').textContent = item.summary || item.description || '';
+    document.getElementById('modal-desc').textContent = item.description || item.summary || 'Keine weitere Beschreibung vorhanden.';
+    document.getElementById('modal-downloads').textContent = `${item.downloads || 0} Downloads`;
+    document.getElementById('modal-icon').src = item.iconUrl || 'https://api.dicebear.com/7.x/shapes/svg?seed=' + item.slug;
 
-  const btn = document.getElementById('modal-install-btn');
-  btn.onclick = () => triggerInstall(item.slug, isModpack);
+    const installBtn = document.getElementById('modal-install-btn');
+    installBtn.onclick = () => triggerInstall(item.slug, isModpack);
 
-  const deleteBtn = document.getElementById('modal-delete-btn');
-  if (deleteBtn) {
-    if (currentUser && (currentUser.role === 'Admin' || currentUser.id === item.authorId)) {
-      deleteBtn.classList.remove('hidden');
-      deleteBtn.classList.add('flex');
-    } else {
-      deleteBtn.classList.add('hidden');
-      deleteBtn.classList.remove('flex');
+    const deleteBtn = document.getElementById('modal-delete-btn');
+    if (deleteBtn) {
+      const canDelete = currentUser && (currentUser.role === 'Admin' || currentUser.id === item.authorId);
+      deleteBtn.classList.toggle('hidden', !canDelete);
+      deleteBtn.classList.toggle('flex', canDelete);
     }
-  }
 
-  document.getElementById('detail-modal').classList.remove('hidden');
-  document.getElementById('detail-modal').classList.add('flex');
-  if (window.lucide) window.lucide.createIcons();
+    document.getElementById('detail-modal').classList.remove('hidden');
+    document.getElementById('detail-modal').classList.add('flex');
+    if (window.lucide) window.lucide.createIcons();
+  } catch (e) {
+    console.error('Failed to open detail view:', e);
+  }
 }
 
 function closeDetailModal() {
@@ -331,25 +349,82 @@ function closeDetailModal() {
   document.getElementById('detail-modal').classList.remove('flex');
 }
 
-// Modpack Studio
+async function deleteCurrentMod() {
+  if (!currentDetailItem) return;
+  const isPack = currentDetailIsPack;
+  deleteItemDirectly(isPack ? 'modpack' : 'mod', currentDetailItem.id, currentDetailItem.name);
+}
+
+async function deleteItemDirectly(type, id, name) {
+  if (!confirm(`Möchtest du ${type === 'modpack' ? 'das Modpack' : 'die Mod'} "${name}" wirklich unwiderruflich löschen?`)) return;
+
+  const token = localStorage.getItem('rustcraft_jwt');
+  if (!token) {
+    alert('Bitte melde dich zuerst an!');
+    openAuthModal('login');
+    return;
+  }
+
+  try {
+    const endpoint = type === 'modpack' ? `${API_BASE}/admin/items/modpack/${id}` : `${API_BASE}/mods/${id}`;
+    const res = await fetch(endpoint, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Fehler beim Löschen');
+
+    alert(`Erfolgreich gelöscht: ${name}`);
+    closeDetailModal();
+    await loadData();
+    if (currentUser && currentUser.role === 'Admin') loadAdminDashboard();
+  } catch (err) {
+    alert('Fehler beim Löschen: ' + err.message);
+  }
+}
+
+// Studio Logic
+function setupStudio() {
+  const nameInput = document.getElementById('studio-pack-name');
+  const verInput = document.getElementById('studio-pack-version');
+  const descInput = document.getElementById('studio-pack-desc');
+
+  if (nameInput) nameInput.addEventListener('input', updateStudioPreview);
+  if (verInput) verInput.addEventListener('change', updateStudioPreview);
+  if (descInput) descInput.addEventListener('input', updateStudioPreview);
+}
+
 function populateStudioMods() {
   const container = document.getElementById('studio-available-mods');
   if (!container) return;
   container.innerHTML = '';
 
+  if (allMods.length === 0) {
+    container.innerHTML = `<p class="text-xs text-slate-500 py-4 text-center">Keine Mods im Katalog verfügbar.</p>`;
+    return;
+  }
+
   allMods.forEach(mod => {
     const isChecked = selectedStudioMods.has(mod.slug);
-    const item = document.createElement('label');
-    item.className = "flex items-center justify-between p-3 bg-slate-800/80 hover:bg-slate-800 rounded-xl cursor-pointer border border-slate-700/60";
+    const item = document.createElement('div');
+    item.className = "flex items-center justify-between p-3 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 rounded-xl cursor-pointer transition-colors";
+    item.onclick = (e) => {
+      if (e.target.tagName !== 'INPUT') {
+        const cb = item.querySelector('input');
+        cb.checked = !cb.checked;
+        toggleStudioMod(mod.slug);
+      }
+    };
+
     item.innerHTML = `
       <div class="flex items-center gap-3">
-        <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleStudioMod('${mod.slug}')" class="w-4 h-4 accent-orange-500 rounded">
+        <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleStudioMod('${mod.slug}')" class="w-4 h-4 rounded text-orange-500 focus:ring-orange-500 border-slate-700 bg-slate-900">
         <div>
-          <p class="text-xs font-bold text-slate-100">${mod.name}</p>
-          <span class="text-[10px] text-slate-400 font-mono">${mod.kind === 'native' ? '.hnmod' : '.hmod'} • v${mod.latestVersion || '1.0.0'}</span>
+          <h4 class="text-xs font-bold text-white">${mod.name}</h4>
+          <span class="text-[10px] text-slate-400">${mod.summary || ''}</span>
         </div>
       </div>
-      <span class="text-[10px] font-semibold text-slate-400 uppercase">${mod.categories ? mod.categories[0] : 'mod'}</span>
+      <span class="text-[10px] font-semibold text-slate-400 uppercase">${mod.kind === 'native' ? '.hnmod' : '.hmod'}</span>
     `;
     container.appendChild(item);
   });
@@ -367,10 +442,12 @@ function toggleStudioMod(slug) {
 
 function updateStudioPreview() {
   const preview = document.getElementById('studio-toml-preview');
+  const countBadge = document.getElementById('studio-mod-count');
+  if (countBadge) countBadge.textContent = `${selectedStudioMods.size} Mods gewählt`;
   if (!preview) return;
 
   const packName = document.getElementById('studio-pack-name')?.value || 'Custom Pack';
-  const packVer = document.getElementById('studio-pack-version')?.value || '1.21.1';
+  const packVer = document.getElementById('studio-pack-version')?.value || '26.3';
   const packDesc = document.getElementById('studio-pack-desc')?.value || '';
   const packSlug = packName.toLowerCase().replace(/[^a-z0-9]+/g, '_');
 
@@ -387,7 +464,7 @@ function updateStudioPreview() {
     toml += `[[mods]]\n`;
     toml += `id = "${slug}"\n`;
     toml += `version = "${mod ? mod.latestVersion || '1.0.0' : '1.0.0'}"\n`;
-    toml += `sha256 = "verified"\n`;
+    toml += `name = "${mod ? mod.name : slug}"\n`;
     toml += `on = true\n\n`;
   });
 
@@ -404,11 +481,80 @@ function exportStudioPackToml() {
   a.click();
 }
 
+async function publishStudioPack() {
+  const token = localStorage.getItem('rustcraft_jwt');
+  if (!token) {
+    alert('Bitte melde dich zuerst an, um ein Modpack auf der Plattform zu veröffentlichen!');
+    openAuthModal('login');
+    return;
+  }
+  const packName = document.getElementById('studio-pack-name').value.trim();
+  const packVer = document.getElementById('studio-pack-version').value;
+  const packDesc = document.getElementById('studio-pack-desc').value.trim();
+  if (!packName) return alert('Bitte gib einen Namen für das Modpack ein.');
+
+  if (selectedStudioMods.size === 0) {
+    return alert('Bitte wähle mindestens eine Mod für dein Modpack aus!');
+  }
+
+  const selectedModsList = [];
+  selectedStudioMods.forEach(slug => {
+    const mod = allMods.find(m => m.slug === slug);
+    if (mod) {
+      selectedModsList.push({
+        id: mod.id,
+        slug: mod.slug,
+        name: mod.name,
+        version: mod.latestVersion || '1.0.0'
+      });
+    }
+  });
+
+  try {
+    const res = await fetch(`${API_BASE}/modpacks/publish`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        name: packName,
+        summary: packDesc || `Rustcraft Pack mit ${selectedModsList.length} Mods`,
+        description: packDesc,
+        gameVersion: packVer,
+        mods: selectedModsList,
+        version: '1.0.0'
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Fehler beim Veröffentlichen');
+
+    alert(`✅ ${data.message}`);
+    await loadData();
+    navigateTo('modpacks');
+  } catch (err) {
+    alert('Fehler beim Erstellen des Modpacks: ' + err.message);
+  }
+}
+
 async function installStudioPackDirectly() {
+  if (selectedStudioMods.size === 0) {
+    return alert('Bitte wähle mindestens eine Mod aus der Liste aus!');
+  }
+
   const packName = document.getElementById('studio-pack-name').value;
-  alert(`Starting 1-Click Installation for Modpack "${packName}" into Rustcraft Launcher!`);
-  // Trigger install
-  triggerInstall('rustcraft-essentials', true);
+  let installedCount = 0;
+  for (const slug of selectedStudioMods) {
+    try {
+      const res = await fetch(`${API_BASE}/launcher/install-local/mod/${slug}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      if (res.ok) installedCount++;
+    } catch (_) {}
+  }
+
+  alert(`✅ Modpack "${packName}" (${installedCount} Mods) direkt in Rustcraft installiert!`);
 }
 
 // File selection handler for project upload
@@ -440,34 +586,33 @@ async function submitUploadProject() {
   const category = document.getElementById('upload-cat').value;
   const summary = document.getElementById('upload-summary').value.trim();
   const version = document.getElementById('upload-version').value.trim() || '1.0.0';
-  const gameVersion = (document.getElementById('upload-game-version') && document.getElementById('upload-game-version').value.trim()) || '1.21.1';
+  const gameVersion = (document.getElementById('upload-game-version') && document.getElementById('upload-game-version').value.trim()) || '26.3';
   const changelog = (document.getElementById('upload-changelog') && document.getElementById('upload-changelog').value.trim()) || 'Initial release';
 
-  if (!name || !summary) return alert('Please fill in mod name and summary.');
+  if (!name || !summary) return alert('Bitte Name und Zusammenfassung eingeben.');
 
   const fileInput = document.getElementById('upload-file');
   const file = fileInput && fileInput.files && fileInput.files[0];
   if (!file) {
-    alert('Please select a mod file (.hnmod, .hmod, .jar, or .zip) to upload.');
-    return;
+    return alert('Bitte wähle eine .hnmod oder .hmod Datei aus.');
   }
 
   const token = localStorage.getItem('rustcraft_jwt');
   if (!token) {
-    alert('Please log in with a Developer or Admin account to publish projects.');
+    alert('Bitte melde dich zuerst an!');
     openAuthModal('login');
     return;
   }
 
   const submitBtn = document.getElementById('upload-submit-btn');
-  const originalBtnText = submitBtn ? submitBtn.innerHTML : '';
   if (submitBtn) {
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i><span>Uploading Project & File...</span>';
+    submitBtn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i><span>Wird hochgeladen...</span>';
+    if (window.lucide) window.lucide.createIcons();
   }
 
   try {
-    // 1. Create mod project metadata
+    // 1. Create project
     const res = await fetch(`${API_BASE}/mods`, {
       method: 'POST',
       headers: {
@@ -476,61 +621,279 @@ async function submitUploadProject() {
       },
       body: JSON.stringify({
         name,
-        kind,
         summary,
+        description: summary,
+        kind,
         categories: [category],
         supportedGameVersions: [gameVersion]
       })
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error);
 
-    const modId = data.id;
+    const mod = await res.json();
+    if (!res.ok) throw new Error(mod.error || 'Fehler beim Erstellen des Mod-Eintrags');
 
-    // 2. Upload the actual mod binary file as version
+    // 2. Upload binary version
     const formData = new FormData();
-    formData.append('file', file);
     formData.append('version', version);
-    formData.append('gameVersion', gameVersion);
     formData.append('changelog', changelog);
+    formData.append('gameVersion', gameVersion);
+    formData.append('file', file);
 
-    const versionRes = await fetch(`${API_BASE}/mods/${modId}/versions`, {
+    const versionRes = await fetch(`${API_BASE}/mods/${mod.id}/versions`, {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
+      headers: { 'Authorization': `Bearer ${token}` },
       body: formData
     });
+
     const versionData = await versionRes.json();
-    if (!versionRes.ok) throw new Error(versionData.error || 'Failed to upload mod version file');
+    if (!versionRes.ok) throw new Error(versionData.error || 'Fehler beim Hochladen der Datei');
 
-    alert(`Project "${name}" and file "${file.name}" published successfully!`);
+    const msg = mod.status === 'pending'
+      ? `Projekt "${name}" wurde erfolgreich hochgeladen und wartet auf die Admin-Freigabe!`
+      : `Projekt "${name}" wurde direkt freigegeben und im Katalog veröffentlicht!`;
+    alert(msg);
 
-    // Reset inputs
+    // Reset form
     document.getElementById('upload-name').value = '';
     document.getElementById('upload-summary').value = '';
     if (fileInput) fileInput.value = '';
     const badge = document.getElementById('file-selected-badge');
     if (badge) badge.classList.add('hidden');
-    const labelMain = document.getElementById('file-label-main');
-    if (labelMain) labelMain.textContent = 'Click to upload or drag & drop';
-    const labelSub = document.getElementById('file-label-sub');
-    if (labelSub) labelSub.textContent = 'Native Mod (.hnmod), Content Mod (.hmod), or Jar Archive';
 
-    navigateTo('mods');
     await loadData();
-  } catch (e) {
-    alert(`Failed to publish: ${e.message}`);
+    navigateTo('mods');
+  } catch (err) {
+    alert('Upload-Fehler: ' + err.message);
   } finally {
     if (submitBtn) {
       submitBtn.disabled = false;
-      submitBtn.innerHTML = originalBtnText;
-      if (window.lucide) lucide.createIcons();
+      submitBtn.innerHTML = '<i data-lucide="upload" class="w-4 h-4"></i><span>Publish Mod Project & Upload File</span>';
+      if (window.lucide) window.lucide.createIcons();
     }
   }
 }
 
-// Auth Handling
+// Admin Moderation Dashboard
+async function loadAdminDashboard() {
+  const token = localStorage.getItem('rustcraft_jwt');
+  if (!token) {
+    alert('Bitte melde dich als Administrator an.');
+    openAuthModal('login');
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}/admin/submissions`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!res.ok) {
+      if (res.status === 403) alert('Zugriff verweigert: Administrator-Rechte erforderlich.');
+      return;
+    }
+
+    adminData = await res.json();
+
+    const statPending = document.getElementById('admin-stat-pending');
+    const statMods = document.getElementById('admin-stat-mods');
+    const statPacks = document.getElementById('admin-stat-packs');
+    const tabPendingCount = document.getElementById('admin-tab-pending-count');
+    const badge = document.getElementById('admin-pending-badge');
+
+    if (statPending) statPending.textContent = adminData.stats.pendingCount;
+    if (statMods) statMods.textContent = adminData.stats.approvedCount;
+    if (statPacks) statPacks.textContent = adminData.stats.totalModpacks;
+    if (tabPendingCount) tabPendingCount.textContent = adminData.stats.pendingCount;
+
+    if (badge) {
+      if (adminData.stats.pendingCount > 0) {
+        badge.textContent = adminData.stats.pendingCount;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    renderAdminPending(adminData.pending);
+    renderAdminApproved(adminData.approved);
+  } catch (err) {
+    console.error('Failed to load admin dashboard:', err);
+  }
+}
+
+function switchAdminTab(tab) {
+  currentAdminTab = tab;
+  const isPending = tab === 'pending';
+  const tabPending = document.getElementById('admin-tab-pending');
+  const tabApproved = document.getElementById('admin-tab-approved');
+  const btnPending = document.getElementById('admin-tab-btn-pending');
+  const btnApproved = document.getElementById('admin-tab-btn-approved');
+
+  if (tabPending) tabPending.classList.toggle('hidden', !isPending);
+  if (tabApproved) tabApproved.classList.toggle('hidden', isPending);
+
+  if (btnPending) {
+    btnPending.className = isPending
+      ? "px-4 py-2 rounded-xl text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center gap-2 transition-all"
+      : "px-4 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800/60 flex items-center gap-2 transition-all";
+  }
+
+  if (btnApproved) {
+    btnApproved.className = !isPending
+      ? "px-4 py-2 rounded-xl text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-2 transition-all"
+      : "px-4 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800/60 flex items-center gap-2 transition-all";
+  }
+}
+
+function renderAdminPending(items) {
+  const container = document.getElementById('admin-pending-container');
+  if (!container) return;
+  container.innerHTML = '';
+
+  if (!items || items.length === 0) {
+    container.innerHTML = `
+      <div class="p-8 bg-slate-900/60 border border-slate-800 rounded-2xl text-center space-y-2">
+        <i data-lucide="check-circle-2" class="w-10 h-10 text-emerald-400 mx-auto"></i>
+        <h4 class="text-sm font-bold text-white">Keine ausstehenden Prüfungen</h4>
+        <p class="text-xs text-slate-400">Alle eingereichten Mods und Modpacks wurden geprüft und freigegeben.</p>
+      </div>
+    `;
+    if (window.lucide) window.lucide.createIcons();
+    return;
+  }
+
+  items.forEach(item => {
+    const card = document.createElement('div');
+    card.className = "p-5 bg-slate-900 border border-slate-800 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-slate-700 transition-all";
+    const dateStr = item.createdAt ? new Date(item.createdAt).toLocaleString('de-DE') : 'Kürzlich';
+    const isPack = item.itemType === 'modpack';
+
+    card.innerHTML = `
+      <div class="flex items-start gap-4">
+        <img src="${item.iconUrl || 'https://api.dicebear.com/7.x/shapes/svg?seed=' + item.slug}" class="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${isPack ? 'bg-amber-500/20 text-amber-400' : 'bg-purple-500/20 text-purple-400'}">
+              ${isPack ? 'Modpack' : 'Mod (' + (item.kind || 'native') + ')'}
+            </span>
+            <span class="text-xs text-slate-500 font-mono">v${item.latestVersion || '1.0.0'}</span>
+            <span class="text-xs text-slate-500">• Eingereicht am ${dateStr}</span>
+          </div>
+          <h4 class="text-base font-bold text-white mt-1">${item.name}</h4>
+          <p class="text-xs text-slate-400 mt-1 max-w-xl">${item.summary || item.description || ''}</p>
+          <div class="text-[11px] text-slate-500 mt-1.5 flex items-center gap-3">
+            <span>Autor: <strong class="text-slate-300">${item.author?.username || 'Unbekannt'}</strong></span>
+            ${item.filename ? `<span>Datei: <code class="text-emerald-400 font-mono">${item.filename}</code></span>` : ''}
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 self-end md:self-center">
+        <button onclick="adminReview('${item.itemType}', '${item.id}', 'approve')" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow flex items-center gap-1.5 transition-all">
+          <i data-lucide="check" class="w-3.5 h-3.5"></i>
+          Freigeben
+        </button>
+        <button onclick="adminReview('${item.itemType}', '${item.id}', 'reject')" class="px-3.5 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 hover:text-red-300 font-bold text-xs rounded-xl border border-red-500/30 flex items-center gap-1.5 transition-all">
+          <i data-lucide="x" class="w-3.5 h-3.5"></i>
+          Ablehnen
+        </button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+  if (window.lucide) window.lucide.createIcons();
+}
+
+function renderAdminApproved(items) {
+  const container = document.getElementById('admin-approved-container');
+  if (!container) return;
+  container.innerHTML = '';
+
+  if (!items || items.length === 0) {
+    container.innerHTML = `<div class="p-8 text-center text-xs text-slate-500">Keine freigegebenen Einträge vorhanden.</div>`;
+    return;
+  }
+
+  items.forEach(item => {
+    const card = document.createElement('div');
+    card.className = "p-4 bg-slate-900/80 border border-slate-800 rounded-2xl flex items-center justify-between gap-4";
+    const isPack = item.itemType === 'modpack';
+
+    card.innerHTML = `
+      <div class="flex items-center gap-3">
+        <img src="${item.iconUrl || 'https://api.dicebear.com/7.x/shapes/svg?seed=' + item.slug}" class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-sm font-bold text-white">${item.name}</span>
+            <span class="px-2 py-0.2 rounded-full text-[9px] font-bold uppercase ${isPack ? 'bg-amber-500/20 text-amber-400' : 'bg-purple-500/20 text-purple-400'}">
+              ${isPack ? 'Pack' : 'Mod'}
+            </span>
+            <span class="text-[11px] text-emerald-400 font-mono">v${item.latestVersion || '1.0.0'}</span>
+          </div>
+          <div class="text-[11px] text-slate-400 mt-0.5 flex items-center gap-3">
+            <span>${item.downloads || 0} Downloads</span>
+            <span>Autor: ${item.author?.username || 'Unbekannt'}</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="adminDeleteItem('${item.itemType}', '${item.id}', '${item.name.replace(/'/g, "\\'")}')" class="p-2 hover:bg-red-500/20 text-slate-400 hover:text-red-400 rounded-xl border border-transparent hover:border-red-500/30 transition-all" title="Löschen">
+          <i data-lucide="trash-2" class="w-4 h-4"></i>
+        </button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+  if (window.lucide) window.lucide.createIcons();
+}
+
+async function adminReview(type, id, action) {
+  const token = localStorage.getItem('rustcraft_jwt');
+  let reason = null;
+  if (action === 'reject') {
+    reason = prompt('Grund für die Ablehnung angeben:');
+    if (reason === null) return;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}/admin/review/${type}/${id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ action, reason })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+
+    alert(`✅ ${data.message}`);
+    await loadAdminDashboard();
+    await loadData();
+  } catch (err) {
+    alert('Fehler bei der Prüfung: ' + err.message);
+  }
+}
+
+async function adminDeleteItem(type, id, name) {
+  if (!confirm(`Möchtest du ${type === 'modpack' ? 'das Modpack' : 'die Mod'} "${name}" wirklich unwiderruflich löschen?`)) return;
+
+  const token = localStorage.getItem('rustcraft_jwt');
+  try {
+    const res = await fetch(`${API_BASE}/admin/items/${type}/${id}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+
+    alert(`✅ ${data.message}`);
+    await loadAdminDashboard();
+    await loadData();
+  } catch (err) {
+    alert('Fehler beim Löschen: ' + err.message);
+  }
+}
+
+// Authentication
 function openAuthModal(mode) {
   currentAuthMode = mode;
   document.getElementById('auth-title').textContent = mode === 'login' ? 'Log In to Rustcraft' : 'Join Rustcraft Platform';
@@ -545,29 +908,32 @@ function closeAuthModal() {
 
 async function submitAuth() {
   const ident = document.getElementById('auth-ident').value.trim();
-  const pass = document.getElementById('auth-pass').value;
+  const pass = document.getElementById('auth-pass').value.trim();
+  if (!ident || !pass) return alert('Bitte Zugangsdaten eingeben.');
 
-  const endpoint = currentAuthMode === 'login' ? `${API_BASE}/auth/login` : `${API_BASE}/auth/register`;
+  const endpoint = currentAuthMode === 'login' ? '/auth/login' : '/auth/register';
   const body = currentAuthMode === 'login' 
-    ? { login: ident, password: pass }
-    : { username: ident, email: `${ident.toLowerCase()}@user.rustcraft.net`, password: pass, role: 'Developer' };
+    ? { identifier: ident, password: pass }
+    : { username: ident, email: `${ident.toLowerCase()}@rustcraft.local`, password: pass };
 
   try {
-    const res = await fetch(endpoint, {
+    const res = await fetch(`${API_BASE}${endpoint}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error);
+    if (!res.ok) throw new Error(data.error || 'Authentifizierung fehlgeschlagen');
 
     localStorage.setItem('rustcraft_jwt', data.token);
     currentUser = data.user;
     updateAuthUi();
     closeAuthModal();
-    alert(`Welcome back, ${currentUser.username}!`);
-  } catch (e) {
-    alert(`Authentication failed: ${e.message}`);
+    alert(`Willkommen zurück, ${currentUser.username}!`);
+    await loadData();
+    if (currentUser.role === 'Admin') loadAdminDashboard();
+  } catch (err) {
+    alert(err.message);
   }
 }
 
@@ -582,6 +948,7 @@ function checkStoredAuth() {
       if (d.user) {
         currentUser = d.user;
         updateAuthUi();
+        if (currentUser.role === 'Admin') loadAdminDashboard();
       }
     })
     .catch(() => localStorage.removeItem('rustcraft_jwt'));
@@ -590,17 +957,29 @@ function checkStoredAuth() {
 
 function updateAuthUi() {
   const container = document.getElementById('auth-buttons-container');
-  if (!currentUser) return;
-  container.innerHTML = `
-    <div class="flex items-center gap-3">
-      <img src="${currentUser.avatarUrl}" class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700">
-      <div class="hidden sm:block text-left">
-        <p class="text-xs font-bold text-white">${currentUser.username}</p>
-        <span class="text-[10px] text-orange-400 font-semibold">${currentUser.role}</span>
+  const adminTab = document.getElementById('tab-admin');
+  if (!currentUser) {
+    if (adminTab) adminTab.classList.add('hidden');
+    return;
+  }
+
+  // Show Admin tab if admin
+  if (adminTab && currentUser.role === 'Admin') {
+    adminTab.classList.remove('hidden');
+  }
+
+  if (container) {
+    container.innerHTML = `
+      <div class="flex items-center gap-3">
+        <img src="${currentUser.avatarUrl}" class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700">
+        <div class="hidden sm:block text-left">
+          <p class="text-xs font-bold text-white">${currentUser.username}</p>
+          <span class="text-[10px] text-orange-400 font-semibold">${currentUser.role}</span>
+        </div>
+        <button onclick="logout()" class="text-xs text-slate-400 hover:text-white px-2">Logout</button>
       </div>
-      <button onclick="logout()" class="text-xs text-slate-400 hover:text-white px-2">Logout</button>
-    </div>
-  `;
+    `;
+  }
 }
 
 function logout() {
@@ -617,4 +996,3 @@ function handleHomeSearch() {
     applyModFilters();
   }
 }
-

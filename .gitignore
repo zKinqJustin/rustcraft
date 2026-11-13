@@ -22,6 +22,10 @@ Cargo.lock
 *.dll
 *.pdb
 dist/
+.local/
+.horizon-cache/
+options.txt
+horizon-*.txt
 build/
 out/
 .next/
