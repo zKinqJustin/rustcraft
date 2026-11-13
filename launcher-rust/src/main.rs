@@ -3156,7 +3156,7 @@ impl Launcher {
                 .child(
                     shell::text(theme::night::TITLE, shell::c(n.ink))
                         .font_family(theme::DISPLAY_FONT)
-                        .child("Horizon"),
+                        .child("Rustcraft"),
                 )
         });
         shell::sidebar_plate(&t)
@@ -3968,7 +3968,7 @@ impl Launcher {
                     .child(group("Account", "user").mt_0())
                     .child(accounts)
                     .child(group("Updates", "reload"))
-                    .child(index_row(n + 1, "Horizon", Some(plain(&horizon)), horizon_action, &t))
+                    .child(index_row(n + 1, "Rustcraft", Some(plain(&horizon)), horizon_action, &t))
                     .child(index_row(
                         n + 1,
                         tr("Launcher"),
